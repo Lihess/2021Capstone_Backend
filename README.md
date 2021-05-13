@@ -14,19 +14,19 @@
 
 📜 github 사용법  
 
-                1. 푸시 : 작업 내용 깃허브에 올리기
-                    git add 파일명  
-                    git add . : 작업한 파일 전체 업로드
-                    git commit -m '커밋 내용'
-                    git push origin 브랜치 명
-                2. 풀 : 깃허브에 올라온 것 받기
-                    git pull origin 받을브랜치명
-                3. 브랜치 관련
-                    git branch 브랜치명 : 브랜치 생성  
-                    git checkout 브랜치명 : 브랜치 전환, 코드가 꼬이는 것을 막기 위해 해당 브랜치에서 작업합니당  
-                4. 브랜치 병합
-                    git checkout 상위브랜치
-                    git merge 병합할브랜치 
+        1. 푸시 : 작업 내용 깃허브에 올리기
+            git add 파일명  
+            git add . : 작업한 파일 전체 업로드
+            git commit -m '커밋 내용'
+            git push origin 브랜치 명
+        2. 풀 : 깃허브에 올라온 것 받기
+            git pull origin 받을브랜치명
+        3. 브랜치 관련
+            git branch 브랜치명 : 브랜치 생성  
+            git checkout 브랜치명 : 브랜치 전환, 코드가꼬이는 것을 막기 위해 해당 브랜치에서 작업합니당  
+        4. 브랜치 병합
+            git checkout 상위브랜치
+            git merge 병합할브랜치 
 
   
 🗂 디렉토리 구조
