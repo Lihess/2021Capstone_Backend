@@ -36,7 +36,7 @@
         ├─public : 사용할 이미지 저장용
         └─src  
            ├─config : 설정
-           ├─services : MVC 중 Controller으로 주요 로직 정의
+           ├─controllers : MVC 중 Controller으로 주요 로직 정의
            ├─models : MVC 중 Model로, DB 모델 정의
            └─routes : 사용할 REST api 선언 
 
