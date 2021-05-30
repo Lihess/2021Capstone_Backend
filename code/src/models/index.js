@@ -1,20 +1,36 @@
 // 21.05.26 이은비
 const Sequelize = require('sequelize');
 
-// 정의된 모델 연결
+// 정의된 모델 불러오기
 const User = require('./user');
+const Order = require('./order');
+const OrderProduct = require('./orderProduct');
+const Ref = require('./ref')
+const RefEnrollIngr = require('./refEnrollIngr')
+const PresetIngr = require('./presetIngr')
+const ImnIngrRecipe = require('./imnIngrRecipe')
+const Recipe = require('./recipe')
+const RecipeIngr = require('./recipeIngr')
+const RecipeProc = require('./recipeProc')
 
-const db = {User};
+// DB에 모델 정의
+const db = {
+  User, Order, OrderProduct, Ref, RefEnrollIngr,
+  PresetIngr, ImnIngrRecipe, Recipe, RecipeIngr, RecipeProc
+};
 
+// 배포 시 production로 수정.
 const env = process.env.NODE_ENV || 'development';
 const config = require('../config/config.json')[env];
 
+// config 연결
 const sequelize = new Sequelize(
     config.database,
     config.username,
     config.password,
     config
 )
+
 const Models = Object.keys(db);
 
 // DB 생성

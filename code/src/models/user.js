@@ -1,6 +1,8 @@
+// 21.05.26 이은비
 const Sequelize = require('sequelize');
 
 module.exports = class User extends Sequelize.Model {
+    // 속성 정의
     static init(sequelize) {
         return super.init({
             userNum:{
@@ -19,19 +21,18 @@ module.exports = class User extends Sequelize.Model {
             },
             nickname : {
                 type : Sequelize.STRING(15),
-                allowNull: true,
+                allowNull: false
             },
             email :{
                 type : Sequelize.STRING(15),
                 unique: true,
-                allowNull: true,
+                allowNull: false
             },
             linkId :{
                 type : Sequelize.STRING(30),
                 allowNull: true
             }
-        },
-        {
+        },{
             sequelize,
             timestamps: true,
             underscored: true,
@@ -41,5 +42,24 @@ module.exports = class User extends Sequelize.Model {
             charset: 'utf8',
             collate: 'utf8_general_ci',
         });
+    }
+
+    // 관계 정의
+    static associate(db) {
+        this.hasMany(db.Order, {
+            foreignKey : {
+                name : 'ordererNum',
+                primaryKey : true,
+                allowNull : false
+            },
+            sourceKey : 'userNum',
+        });
+        this.hasMany(db.Ref, {
+            foreignKey : {
+                name : 'ownerNum',
+                allowNull : false,
+            },
+            sourceKey : 'userNum'
+        })
     }
 } 
