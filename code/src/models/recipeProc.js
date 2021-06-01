@@ -1,4 +1,4 @@
-// 21.05.26 이은비
+// 21.05.30 이은비
 // 레시피과정(recipeProc) 모델
 const Sequelize = require('sequelize');
 
@@ -15,6 +15,7 @@ module.exports = class RecipeProc extends Sequelize.Model {
                 type : Sequelize.STRING(300),
                 allowNull : false
             },
+            // 사진은 선택사항으로 수정.
             picPath : {
                 type : Sequelize.STRING(300),
                 allowNull : true

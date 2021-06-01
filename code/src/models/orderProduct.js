@@ -15,6 +15,7 @@ module.exports = class OrderProduct extends Sequelize.Model {
                 type : Sequelize.STRING(30),
                 allowNull: false,
             },
+            // 다른 모델의 수량과 도메인이 동일하기 때문에 소수점도 있음
             quantity : {
                 type : Sequelize.DECIMAL(5, 2),
                 allowNull : false

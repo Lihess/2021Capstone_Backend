@@ -1,4 +1,5 @@
 // 21.05.26 이은비
+// 사용자(User) 모델
 const Sequelize = require('sequelize');
 
 module.exports = class User extends Sequelize.Model {

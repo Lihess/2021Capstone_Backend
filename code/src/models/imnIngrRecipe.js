@@ -1,4 +1,4 @@
-// 21.05.26 이은비
+// 21.05.30 이은비
 // 임박식자재레시피(ImnIngrRecipe) 모델
 const Sequelize = require('sequelize');
 

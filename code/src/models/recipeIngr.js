@@ -1,4 +1,4 @@
-// 21.05.26 이은비
+// 21.05.30 이은비
 // 레시피식자재(recipeIngr) 모델
 const Sequelize = require('sequelize');
 
