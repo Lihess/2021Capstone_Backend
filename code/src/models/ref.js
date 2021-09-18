@@ -20,6 +20,11 @@ module.exports = class User extends Sequelize.Model {
                 type : Sequelize.STRING(300),
                 allowNull : true
             },
+            colorCode : {
+                type : Sequelize.CHAR(7),
+                allowNull : false,
+                defaultValue : '#B0D8E7'
+            },
             refType : {
                 // 'h : 가정용 냉장고(기본), k : 김치 냉장고, v : 음료 냉장고, f : 냉동고, r : 냉장고' 내에서 만
                 type : Sequelize.ENUM('h', 'k', 'v', 'f', 'r'),
