@@ -13,11 +13,12 @@ const ImnIngrRecipe = require('./imnIngrRecipe')
 const Recipe = require('./recipe')
 const RecipeIngr = require('./recipeIngr')
 const RecipeProc = require('./recipeProc')
+const BookmarkRecipe = require('./bookmarkRecipe')
 
 // DB에 모델 정의
 const db = {
-  User, Order, OrderProduct, Ref, RefEnrollIngr,
-  PresetIngr, ImnIngrRecipe, Recipe, RecipeIngr, RecipeProc
+  User, Order, OrderProduct, Ref, RefEnrollIngr, PresetIngr, 
+  ImnIngrRecipe, Recipe, RecipeIngr, RecipeProc, BookmarkRecipe
 };
 
 // 배포 시 production로 수정.
