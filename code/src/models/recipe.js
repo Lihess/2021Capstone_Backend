@@ -24,6 +24,11 @@ module.exports = class Recipe extends Sequelize.Model {
                 type : Sequelize.DECIMAL(3, 1),
                 allowNull : false,
                 defaultValue : 1
+            },
+            // 사진은 선택사항으로 수정.
+            picPath : {
+                type : Sequelize.STRING(300),
+                allowNull : true
             }
         },{
             sequelize,
