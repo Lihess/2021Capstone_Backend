@@ -16,5 +16,14 @@ models.sequelize.sync().then( () => {
   console.log(err);
 })
 
+// req의 body를 받기위해
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// 라우터 연결
+const userRouter = require('./src/routes/user')
+
+
+app.use('/api/user', userRouter)
 
 app.listen(3000, () => console.log('...lisen port 3000'))
