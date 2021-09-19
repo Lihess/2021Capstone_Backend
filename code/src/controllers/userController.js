@@ -78,8 +78,9 @@ module.exports = class UserController {
                     linkId : linkId || userInfo.linkId,
                 })
             }).catch((err) => {
-                console.log(err)
-                res.status(500).json({ message: "Internal Server Error" });
+                // 유효성 검사에 따른 응답
+                err.name ==  "SequelizeUniqueConstraintError" ?
+                res.status(400).json({message : "ID is not uniqe"}) : res.status(500).json({ message: "Internal Server Error" });
             })
         }
     }
