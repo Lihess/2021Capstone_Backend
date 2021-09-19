@@ -67,11 +67,12 @@ module.exports = class UserController {
                     linkId : linkId || userInfo.linkId,
                     salt : salt || userInfo.salt
                 }, { 
-                    where : {userNum : userNum
-                }}) .then((result) => {
+                    where : {userNum : userNum}
+                }) .then((result) => {
                 // 패스워드, salt는 보안상의 문제로 제외
                 // result가 결과객채를 반환하지 않아서..
                 res.status(200).json({
+                    userNum : userNum, 
                     id : id || userInfo.id,
                     nickname : nickname || userInfo.nickname, 
                     email : email || userInfo.email, 
