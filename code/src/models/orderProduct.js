@@ -7,7 +7,8 @@ module.exports = class OrderProduct extends Sequelize.Model {
     static init(sequelize) {
         return super.init({
             productOrnu : {
-                type : Sequelize.CHAR(10),
+                type: Sequelize.INTEGER,
+                autoIncrement: true,
                 allowNull: false,
                 primaryKey : true
             },
