@@ -7,7 +7,7 @@ module.exports = class PresetIngr extends Sequelize.Model {
     static init(sequelize) {
         return super.init({
             presetIngrNum : {
-                type : Sequelize.CHAR(3),
+                type : Sequelize.CHAR(10),
                 allowNull: false,
                 unique: true,
                 primaryKey : true

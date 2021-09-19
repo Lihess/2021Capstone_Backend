@@ -7,7 +7,7 @@ module.exports = class User extends Sequelize.Model {
     static init(sequelize) {
         return super.init({
             userNum:{
-                type: Sequelize.INTEGER,
+                type: Sequelize.STRING(10),
                 allowNull: false,
                 autoIncrement: true,
                 unique: true,
