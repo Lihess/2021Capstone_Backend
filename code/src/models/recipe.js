@@ -7,8 +7,9 @@ module.exports = class Recipe extends Sequelize.Model {
     static init(sequelize) {
         return super.init({
             recipeNum :{
-                type: Sequelize.CHAR(10),
+                type: Sequelize.INTEGER,
                 allowNull: false,
+                autoIncrement: true,
                 unique: true,
                 primaryKey : true
             },

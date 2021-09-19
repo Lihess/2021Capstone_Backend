@@ -7,7 +7,8 @@ module.exports = class RecipeProc extends Sequelize.Model {
     static init(sequelize) {
         return super.init({
             procOrnu :{
-                type: Sequelize.CHAR(3),
+                type: Sequelize.INTEGER,
+                autoIncrement: true,
                 allowNull: false,
                 primaryKey : true
             },
