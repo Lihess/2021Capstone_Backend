@@ -7,17 +7,19 @@ module.exports = class User extends Sequelize.Model {
     static init(sequelize) {
         return super.init({
             userNum:{
-                type: Sequelize.CHAR(10),
+                type: Sequelize.INTEGER,
                 allowNull: false,
+                autoIncrement: true,
                 unique: true,
                 primaryKey : true
             },
             id : {
                 type : Sequelize.STRING(15),
-                allowNull: false
+                allowNull: false,
+                unique: true
             },
             pwd :{
-                type : Sequelize.STRING(15),
+                type : Sequelize.STRING(150),
                 allowNull: false,
             },
             nickname : {
@@ -25,12 +27,19 @@ module.exports = class User extends Sequelize.Model {
                 allowNull: false
             },
             email :{
-                type : Sequelize.STRING(15),
+                type: Sequelize.STRING(100),
+                validate: {
+                  isEmail: true,
+                },
                 allowNull: false
             },
             linkId :{
                 type : Sequelize.STRING(30),
                 allowNull: true
+            },
+            salt : { // 암호화된 비밀번호 일치여부를 알기 위해
+                type : Sequelize.STRING(15),
+                allowNull: false
             }
         },{
             sequelize,
