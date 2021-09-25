@@ -53,6 +53,7 @@ module.exports = class User extends Sequelize.Model {
     static associate(db) {
         // 관계 중 자신이 부모인
         this.hasMany(db.RefEnrollIngr, {
+            as : 'enrollIngrs',
             foreignKey : {
                 name : 'refNum',
                 primaryKey : true,

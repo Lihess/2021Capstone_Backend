@@ -36,6 +36,7 @@ module.exports = class OrderProduct extends Sequelize.Model {
     // 관계 정의
     static associate(db) {
         this.belongsTo(db.Order, {
+            as : 'orderProducts',
             foreignKey : {
                 name : 'orderNum',
                 primaryKey : true,

@@ -33,6 +33,7 @@ module.exports = class Order extends Sequelize.Model {
     static associate(db) {
         // 관계 중 자신이 부모인
         this.hasMany(db.OrderProduct, {
+            as : 'orderProducts',
             foreignKey : {
                 name : 'orderNum',
                 primaryKey : true,

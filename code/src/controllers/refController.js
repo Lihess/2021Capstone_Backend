@@ -31,7 +31,7 @@ module.exports = class RefController {
 
         Ref.findByPk(
             refNum,{
-                include: [{model : RefEnrollIngr, attributes: {exclude: [ 'refNum','createdAt', 'updatedAt', 'deletedAt']}}], 
+                include: [{model : RefEnrollIngr, attributes: {exclude: [ 'refNum','createdAt', 'updatedAt', 'deletedAt']}, as : 'enrollIngrs'}], 
                 attributes: {exclude: [ 'createdAt', 'updatedAt', 'deletedAt']}
             }
         ).then((result) => {
@@ -102,7 +102,7 @@ module.exports = class RefController {
 
         Ref.findAll({
             where : { ownerNum : ownerNum },
-            include: [{model : RefEnrollIngr, attributes: {exclude: [ 'refNum','createdAt', 'updatedAt', 'deletedAt']}}], 
+            include: [{model : RefEnrollIngr, attributes: {exclude: [ 'refNum','createdAt', 'updatedAt', 'deletedAt']}, as : 'enrollIngrs'}], 
             attributes: {exclude: [ 'createdAt', 'updatedAt', 'deletedAt']}
         }).then((result) => {
             console.log(result)

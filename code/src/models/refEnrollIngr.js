@@ -74,6 +74,7 @@ module.exports = class RefEnrollIngr extends Sequelize.Model {
 
         // 관계 중 자신이 자식인
         this.belongsTo(db.Ref, {
+            as : 'enrollIngrs',
             foreignKey : {
                 name : 'refNum',
                 primaryKey : true,

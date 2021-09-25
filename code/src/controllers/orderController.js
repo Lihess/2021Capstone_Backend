@@ -29,7 +29,7 @@ module.exports = class OrderController {
 
         Order.findByPk(
             orderNum,{
-                include: [{model : OrderProduct, attributes: {exclude: [ 'orderNum', 'createdAt', 'updatedAt', 'deletedAt']}}], 
+                include: [{model : OrderProduct, attributes: {exclude: [ 'orderNum', 'createdAt', 'updatedAt', 'deletedAt']}, as : 'orderProducts'}], 
                 attributes: {exclude: [ 'createdAt', 'updatedAt', 'deletedAt']}
             }
         ).then((result) => {
@@ -89,7 +89,7 @@ module.exports = class OrderController {
        
         Order.findAll({
             where : { ordererNum : ordererNum },
-            include: [{model : OrderProduct, attributes: {exclude: [ 'orderNum','createdAt', 'updatedAt', 'deletedAt']}}], 
+            include: [{model : OrderProduct, attributes: {exclude: [ 'orderNum','createdAt', 'updatedAt', 'deletedAt']}, as : 'orderProducts'}], 
             attributes: {exclude: [ 'createdAt', 'updatedAt', 'deletedAt']}
         }).then((result) => {
             console.log(result)
