@@ -1,6 +1,7 @@
 // 21.09.18 이은비
 // Ref에 대한 데이터 처리부분
 const Ref = require('../models/ref')
+const refEnrollIngr = require('../models/refEnrollIngr')
 
 module.exports = class RefController {
     static async createRef(req, res){
@@ -29,11 +30,15 @@ module.exports = class RefController {
         const { refNum } = req.params;
 
         Ref.findByPk(
-            refNum, {attributes: {exclude: [ 'createdAt', 'updatedAt', 'deletedAt']}}
+            refNum,{
+                include: [{model : refEnrollIngr, attributes: {exclude: [ 'refNum','createdAt', 'updatedAt', 'deletedAt']}}], 
+                attributes: {exclude: [ 'createdAt', 'updatedAt', 'deletedAt']}
+            }
         ).then((result) => {
             result == null 
                 ? res.status(404).json({ message: "Not Found" }) : res.status(200).json(result)
         }).catch((err) => {
+            console.log(err)
             res.status(500).json({ message: "Internal Server Error" });
         })
     }
@@ -68,7 +73,7 @@ module.exports = class RefController {
                 if (err.name == 'SequelizeValidationError') 
                     res.status(400).json({message : "TYPE must be in ('h', 'k', 'v', 'f', 'r')"}) 
                 else if(err.name == 'SequelizeForeignKeyConstraintError')
-                    res.status(404).json({ message: "User Not Found" })
+                    res.status(404).json({ message: "Ref Not Found" })
                 else res.status(500).json({ message: "Internal Server Error" });
             })
         }
@@ -90,5 +95,22 @@ module.exports = class RefController {
                 res.status(500).json({ message: "Internal Server Error" });
             })
         }
+    }
+
+    static async readRefbyOwner(req, res){
+        const { ownerNum } = req.params
+
+        Ref.findAll({
+            where : { ownerNum : ownerNum },
+            include: [{model : refEnrollIngr, attributes: {exclude: [ 'refNum','createdAt', 'updatedAt', 'deletedAt']}}], 
+            attributes: {exclude: [ 'createdAt', 'updatedAt', 'deletedAt']}
+        }).then((result) => {
+            console.log(result)
+            result == null 
+                ? res.status(404).json({ message: "Not Found" }) : res.status(200).json(result)
+        }).catch((err) => {
+            console.log(err)
+            res.status(500).json({ message: "Internal Server Error" });
+        })
     }
 }
