@@ -18,7 +18,8 @@ module.exports = class RefEnrollIngr extends Sequelize.Model {
             },
             enrollDate : {
                 type: Sequelize.DATEONLY,
-                allowNull : false
+                allowNull : false,
+                defaultValue: Sequelize.NOW
             },
             expyDate : {
                 type: Sequelize.DATEONLY,
@@ -32,6 +33,11 @@ module.exports = class RefEnrollIngr extends Sequelize.Model {
                 // 'f : 냉동, r : 냉장(기본), a : 실온' 내에서만 
                 type : Sequelize.ENUM('f', 'r', 'a'),
                 allowNull : false,
+                validate: {
+                    isIn : {
+                        args: [['f', 'r', 'a']],
+                    }
+                },
                 defaultValue : 'r'
             }
         }, {
