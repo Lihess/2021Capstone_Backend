@@ -69,6 +69,14 @@ module.exports = class User extends Sequelize.Model {
                 allowNull : false,
             },
             sourceKey : 'userNum'
+        });
+        this.hasMany(db.BookmarkRecipe, {
+            foreignKey : {
+                name : 'userNum',
+                primaryKey : true,
+                allowNull : false
+            },
+            sourceKey : 'userNum'
         })
     }
 } 

@@ -1,17 +1,19 @@
-// 21.09.18 이은비
+// 21.09.25 이은비
 // RefEnrollIngr에 대한 데이터 처리부분
 const RefEI = require('../models/refEnrollIngr')
 
-module.exports = class RefController {
+module.exports = class RefEIController {
     static async createRefEI(req, res){
         const {refNum, ingrName, expyDate, quantity, storageMthdType, presetIngrNum} = req.body
 
+        const countOrnu = await RefEI.count({where : {refNum : refNum}})
+        
         RefEI.create({
-            refNum, ingrName, expyDate, quantity, storageMthdType, presetIngrNum
+            refNum, ingrOrnu : countOrnu + 1, ingrName, expyDate, quantity, storageMthdType, presetIngrNum
         }).then((result)=> {
             res.status(200).json({
                 refNum : result.refNum, 
-                ingerOrnu : result.ingerOrnu,
+                ingrOrnu : result.ingrOrnu,
                 ingrName : result.IngrName, 
                 enrollDate : result.enrollDate,
                 expyDate : result.expyDate, 
@@ -39,7 +41,6 @@ module.exports = class RefController {
             result == null 
                 ? res.status(404).json({ message: "Not Found" }) : res.status(200).json(result)
         }).catch((err) => {
-            console.log(err)
             res.status(500).json({ message: "Internal Server Error" });
         })
     }
@@ -59,12 +60,12 @@ module.exports = class RefController {
                 storageMthdType : storageMthdType || refEIInfo.storageMthdType, 
                 presetIngrNum : presetIngrNum || refEIInfo.presetIngrNum
             }, { 
-                where : {refNum : refNum}
+                where : {refNum : refNum, ingrOrnu : ingrOrnu}
             }).then((result) => {
                 // result가 결과객체를 반환하지 않아서..
                 res.status(200).json({
                     refNum : refNum,
-                    ingerOrnu : ingrOrnu,
+                    ingrOrnu : ingrOrnu,
                     ingrName : ingrName || refEIInfo.IngrName, 
                     enrollDate : refEIInfo.enrollDate,
                     expyDate : expyDate || refEIInfo.expyDate, 
@@ -73,8 +74,6 @@ module.exports = class RefController {
                     presetIngrNum : presetIngrNum || refEIInfo.presetIngrNum
                 })
             }).catch((err) => {
-            
-                console.log(err)
                 if (err.name == 'SequelizeValidationError') 
                     res.status(400).json({message : "TYPE must be in ('f', 'r', 'a')"}) 
                 else if(err.name == 'SequelizeForeignKeyConstraintError')

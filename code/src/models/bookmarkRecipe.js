@@ -16,8 +16,8 @@ module.exports = class BookmarkRecipe extends Sequelize.Model {
             sequelize,
             timestamps: true,
             underscored: true,
-            modelName: 'RecipeIngr',
-            tableName: 'recipe_ingr',
+            modelName: 'BookmarkRecipe',
+            tableName: 'Bookmark_recipe',
             paranoid: false,
             charset: 'utf8',
             collate: 'utf8_general_ci',
@@ -33,7 +33,7 @@ module.exports = class BookmarkRecipe extends Sequelize.Model {
                 allowNull : false
             },
             targetKey : 'recipeNum'
-        }),
+        });
         this.belongsTo(db.User, {
             foreignKey : {
                 name : 'userNum',

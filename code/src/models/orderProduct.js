@@ -41,7 +41,7 @@ module.exports = class OrderProduct extends Sequelize.Model {
                 primaryKey : true,
                 allowNull : false
             },
-            targetKey : 'orderNum',
+            targetKey  : 'orderNum'
         });
     }
 }

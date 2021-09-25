@@ -68,5 +68,13 @@ module.exports = class Recipe extends Sequelize.Model {
             },
             sourceKey : 'recipeNum'
         });
+        this.hasMany(db.BookmarkRecipe, {
+            foreignKey : {
+                name : 'recipeNum',
+                primaryKey : true,
+                allowNull : false
+            },
+            sourceKey : 'recipeNum'
+        });
     }
 } 
