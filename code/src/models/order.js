@@ -14,7 +14,7 @@ module.exports = class Order extends Sequelize.Model {
                 primaryKey : true
             },
             orderDate : {
-                type : Sequelize.TIME,
+                type : Sequelize.DATEONLY,
                 allowNull: false,
             }
         },{
@@ -39,7 +39,7 @@ module.exports = class Order extends Sequelize.Model {
                 allowNull : false
             },
             sourceKey : 'orderNum'
-        });
+        }),
         // 관계 중 자신이 자식인
         this.belongsTo(db.User, {
             foreignKey : {
