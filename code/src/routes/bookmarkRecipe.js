@@ -11,6 +11,6 @@ router.put('/', BookmarkRecipeCotroller.updateBookmark)
 router.delete('/', BookmarkRecipeCotroller.deleteBookmark)
 
 // API
-router.get('/owner/:userNum', BookmarkRecipeCotroller.readBookmarkByOwner)
+router.get('/user/:userNum', BookmarkRecipeCotroller.readBookmarkByUser)
 
 module.exports = router;

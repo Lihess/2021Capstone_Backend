@@ -11,6 +11,6 @@ router.put('/', OrderController.updateOrder)
 router.delete('/:orderNum', OrderController.deleteOrder)
 
 // API
-router.get('/owner/:ordererNum', OrderController.readOrderByOwner)
+router.get('/user/:ordererNum', OrderController.readOrderByUser)
 
 module.exports = router;

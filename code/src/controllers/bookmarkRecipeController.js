@@ -1,5 +1,5 @@
-// 21.09.25 이은비
-// Order에 대한 데이터 처리부분
+// 21.09.26 이은비
+// Bookmark에 대한 데이터 처리부분
 const { Recipe } = require('../models')
 const BookmarkRecipe = require('../models/bookmarkRecipe')
 
@@ -88,7 +88,7 @@ module.exports = class BookmarkController {
         }
     }
 
-    static async readBookmarkByOwner(req, res){
+    static async readBookmarkByUser(req, res){
         const { userNum } = req.params;
 
        

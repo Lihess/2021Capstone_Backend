@@ -86,7 +86,7 @@ module.exports = class OrderController {
         }
     }
 
-    static async readOrderByOwner(req, res){
+    static async readOrderByUser(req, res){
         const { ordererNum } = req.params
        
         Order.findAll({

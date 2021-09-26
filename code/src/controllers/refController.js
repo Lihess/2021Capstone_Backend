@@ -97,7 +97,7 @@ module.exports = class RefController {
         }
     }
 
-    static async readRefbyOwner(req, res){
+    static async readRefbyUser(req, res){
         const { ownerNum } = req.params
 
         Ref.findAll({
