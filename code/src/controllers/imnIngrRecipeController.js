@@ -1,6 +1,6 @@
 // 21.09.25 이은비
 // IIR에 대한 데이터 처리부분
-const { Recipe, RefEnrollIngr } = require('../models')
+const { Recipe, RefEnrollIngr, sequelize } = require('../models')
 const IIR = require('../models/imnIngrRecipe')
 
 module.exports = class ImnIngrRecipeController {
@@ -92,24 +92,23 @@ module.exports = class ImnIngrRecipeController {
         }
     }
 
-//    static async readOrderByOwner(req, res){
-//        const { ordererNum } = req.params
-//       
-//        Order.findAll({
-//            where : { ordererNum : ordererNum },
-//            order : [['orderDate', 'ASC']],
-//            include: [{model : OrderProduct, attributes: {exclude: [ 'orderNum','createdAt', 'updatedAt', 'deletedAt']}, as : 'orderProducts'}], 
-//            attributes: {exclude: [ 'createdAt', 'updatedAt', 'deletedAt']}
-//        }).then((result) => {
-//            console.log(result)
-//            result == null 
-//                ? res.status(404).json({ message: "Not Found" }) : res.status(200).json(result)
-//        }).catch((err) => {
-//            console.log(err)
-//            res.status(500).json({ message: "Internal Server Error" });
-//        })
-//    }
+    static async readIIRByUser(req, res){
+        const { userNum } = req.params
+       
+        IIR.findAll({
+            where : {
+                refNum : [sequelize.literal(`SELECT ref_num FROM ref WHERE owner_num=${userNum}`)]
+            },
+            order : [['refNum', 'ASC'], ['ingrOrnu', 'ASC']],
+            include: [
+                { model : Recipe, attributes: {exclude: [ 'createdAt', 'updatedAt', 'deletedAt']}},
+                { model : RefEnrollIngr, attributes: {exclude: [ 'refNum', 'ingrOrnu', 'createdAt', 'updatedAt', 'deletedAt']}}
+            ],
+            attributes: {exclude: [ 'recipeNum','createdAt', 'updatedAt', 'deletedAt']}
+        }).then((result) => {
+            res.status(200).json(result)
+        }).catch((err) => {
+            res.status(500).json({ message: "Internal Server Error" });
+        })
+    }
 }
-
-// 사용자의 임박식자재만 모두 불러오기, 임박식자재 별 모든 레시피
-// 사용자의 모든 ~

@@ -11,6 +11,6 @@ router.put('/', ImnIngrRecipeController.updateIIR)
 router.delete('/', ImnIngrRecipeController.deleteIIR)
 
 // API
-// router.get('/owner/:ownerNum', RefController.readRefbyOwner)
+router.get('/user/:userNum', ImnIngrRecipeController.readIIRByUser)
 
 module.exports = router;
