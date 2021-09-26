@@ -27,7 +27,7 @@ module.exports = class ImnIngrRecipe extends Sequelize.Model {
     // 관계 정의
     static associate(db) {
         this.belongsTo(db.RefEnrollIngr, {
-            as : "ref_enroll_ingr_fk1",
+          
             foreignKey : {
                 name : 'ingrOrnu',
                 primaryKey : true,
@@ -36,7 +36,7 @@ module.exports = class ImnIngrRecipe extends Sequelize.Model {
             targetKey : 'ingrOrnu'
         });
         this.belongsTo(db.RefEnrollIngr, {
-            as : "ref_enroll_ingr_fk2",
+   
             foreignKey : {
                 name : 'refNum',
                 primaryKey : true,
