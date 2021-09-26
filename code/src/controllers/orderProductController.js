@@ -63,7 +63,9 @@ module.exports = class OrderProductController {
                     quantity : quantity || productInfo.quantity
                 })
             }).catch((err) => {
-                res.status(500).json({ message: "Internal Server Error" });
+                if(err.name == 'SequelizeForeignKeyConstraintError')
+                    res.status(404).json({ message: "Order Not Found" })
+                else res.status(500).json({ message: "Internal Server Error" });
             })
         }
     }
