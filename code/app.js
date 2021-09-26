@@ -26,11 +26,13 @@ const refRouter = require('./src/routes/ref')
 const refEnrollIngrRouter = require('./src/routes/refEnrollInger')
 const orderRouter = require('./src/routes/order')
 const orderProductRouer = require('./src/routes/orderProduct')
+const bookmarkRecipeRouter = require('./src/routes/bookmarkRecipe')
 
 app.use('/api/user', userRouter)
 app.use('/api/ref', refRouter)
 app.use('/api/refEnrollIngr', refEnrollIngrRouter)
 app.use('/api/order', orderRouter)
 app.use('/api/orderProduct', orderProductRouer)
+app.use('/api/bookmarkRecipe', bookmarkRecipeRouter)
 
 app.listen(3000, () => console.log('...lisen port 3000'))

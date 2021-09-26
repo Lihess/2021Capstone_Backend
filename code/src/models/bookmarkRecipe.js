@@ -27,6 +27,7 @@ module.exports = class BookmarkRecipe extends Sequelize.Model {
     // 관계 정의
     static associate(db) {
         this.belongsTo(db.Recipe, {
+            as : 'recipe',
             foreignKey : {
                 name : 'recipeNum',
                 primaryKey : true,
