@@ -89,6 +89,7 @@ module.exports = class OrderController {
        
         Order.findAll({
             where : { ordererNum : ordererNum },
+            order : [['orderDate', 'ASC']],
             include: [{model : OrderProduct, attributes: {exclude: [ 'orderNum','createdAt', 'updatedAt', 'deletedAt']}, as : 'orderProducts'}], 
             attributes: {exclude: [ 'createdAt', 'updatedAt', 'deletedAt']}
         }).then((result) => {
