@@ -86,7 +86,8 @@ module.exports = class OrderController {
         }
     }
 
-    static async readOrderByUser(req, res){
+    // 사용자의 모든 주문 내역 read
+    static async readOrdersByUser(req, res){
         const { ordererNum } = req.params
        
         Order.findAll({

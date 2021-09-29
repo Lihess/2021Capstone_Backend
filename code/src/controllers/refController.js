@@ -97,7 +97,8 @@ module.exports = class RefController {
         }
     }
 
-    static async readRefByUser(req, res){
+    // 시용자의 모든 냉장고 read
+    static async readRefsByUser(req, res){
         const { ownerNum } = req.params
 
         Ref.findAll({
@@ -113,6 +114,7 @@ module.exports = class RefController {
         })
     }
 
+    // 사용자의 모든 냉장고에 대하여 냉장고 번호만 read
     static async readRefNumsByUser(req, res) {
         const { ownerNum } = req.params;
 
