@@ -91,7 +91,6 @@ module.exports = class BookmarkController {
     static async readBookmarkByUser(req, res){
         const { userNum } = req.params;
 
-       
         BookmarkRecipe.findAll({
             where : { userNum : userNum },
             // 순번 기준으로 오름차순
