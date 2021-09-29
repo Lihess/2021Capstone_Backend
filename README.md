@@ -28,6 +28,12 @@
             git checkout 상위브랜치
             git merge 병합할브랜치 
 
+🌱 github branchs
+
+    master : 최종 작업 상태 (배포버전)  
+    test : 개인 작업을 합치기 위한 브랜치  
+    seo : 서상균님의 개인 브랜치  
+    lee : 이은비님의 개인 브랜치
   
 🗂 디렉토리 구조
 
@@ -39,7 +45,6 @@
            ├─controllers : MVC 중 Controller으로 주요 로직 정의
            ├─models : MVC 중 Model로, DB 모델 정의
            └─routes : 사용할 REST api 선언 
-
 
 🖥 Front-End : https://github.com/pyo-sh/2021Capstone_Frontend  
 📅 Notion : https://www.notion.so/2021-0bdb752d2e2c47cba89ec03cff7af398
