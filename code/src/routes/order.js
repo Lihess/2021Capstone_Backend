@@ -10,7 +10,4 @@ router.get('/:orderNum', OrderController.readOrder)
 router.put('/', OrderController.updateOrder)
 router.delete('/:orderNum', OrderController.deleteOrder)
 
-// API
-router.get('/user/:ordererNum', OrderController.readOrderByUser)
-
 module.exports = router;

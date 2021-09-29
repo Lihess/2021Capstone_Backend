@@ -10,7 +10,4 @@ router.get('/', ImnIngrRecipeController.readIIR)
 router.put('/', ImnIngrRecipeController.updateIIR)
 router.delete('/', ImnIngrRecipeController.deleteIIR)
 
-// API
-router.get('/user/:userNum', ImnIngrRecipeController.readIIRByUser)
-
 module.exports = router;

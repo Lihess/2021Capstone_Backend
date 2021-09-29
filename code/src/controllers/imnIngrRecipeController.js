@@ -102,11 +102,35 @@ module.exports = class ImnIngrRecipeController {
             order : [['refNum', 'ASC'], ['ingrOrnu', 'ASC']],
             include: [
                 { model : Recipe, attributes: {exclude: [ 'createdAt', 'updatedAt', 'deletedAt']}},
-                { model : RefEnrollIngr, attributes: {exclude: [ 'refNum', 'ingrOrnu', 'createdAt', 'updatedAt', 'deletedAt']}}
+                { model : RefEnrollIngr
+                , attributes: {exclude: [ 'refNum', 'ingrOrnu', 'createdAt', 'updatedAt', 'deletedAt']}}
             ],
             attributes: {exclude: [ 'recipeNum','createdAt', 'updatedAt', 'deletedAt']}
         }).then((result) => {
             res.status(200).json(result)
+        }).catch((err) => {
+            console.log(err)
+            res.status(500).json({ message: "Internal Server Error" });
+        })
+    }
+
+    static async readOnlyIngrByUser(req, res){
+        const { userNum } = req.params
+       
+        IIR.findAll({
+            where : {
+                refNum : [sequelize.literal(`SELECT ref_num FROM ref WHERE owner_num=${userNum}`)]
+            },
+            order : [['refNum', 'ASC'], ['ingrOrnu', 'ASC']],
+            include: [{ model : RefEnrollIngr, attributes: {exclude: [ 'createdAt', 'updatedAt', 'deletedAt']}}],
+            attributes: {exclude: ['recipeNum','createdAt', 'updatedAt', 'deletedAt']},
+            // 그룹화를 통해 동일한 식자재는 한번만 호출되도록.
+            group : ['refNum', 'ingrOrnu']
+        }).then((result) => {
+            // 응답 데이터 형식을 맞추기 위해서.
+            const ingrList = { imnIngrs : result.map((result) => result.RefEnrollIngr) }
+            
+            res.status(200).json( ingrList)
         }).catch((err) => {
             res.status(500).json({ message: "Internal Server Error" });
         })

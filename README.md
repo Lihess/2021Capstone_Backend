@@ -28,7 +28,10 @@
             git checkout 상위브랜치
             git merge 병합할브랜치 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> lee
 🌱 github branchs
 
         master : 최종 작업 상태 (배포버전)  
