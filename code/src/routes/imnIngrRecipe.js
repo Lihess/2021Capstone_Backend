@@ -12,5 +12,6 @@ router.delete('/', ImnIngrRecipeController.deleteIIR)
 
 // API
 router.get('/user/:userNum', ImnIngrRecipeController.readIIRByUser)
+router.get('/ingrsByUser/:userNum', ImnIngrRecipeController.readOnlyIngrByUser)
 
 module.exports = router;

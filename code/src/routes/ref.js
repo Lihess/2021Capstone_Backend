@@ -11,6 +11,7 @@ router.put('/', RefController.updateRef)
 router.delete('/:refNum', RefController.deleteRef)
 
 // API
-router.get('/user/:ownerNum', RefController.readRefbyUser)
+router.get('/user/:ownerNum', RefController.readRefByUser)
+router.get('/refNums/:ownerNum', RefController.readRefNumsByUser)
 
 module.exports = router;

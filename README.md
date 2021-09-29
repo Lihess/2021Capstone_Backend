@@ -28,6 +28,12 @@
             git checkout 상위브랜치
             git merge 병합할브랜치 
 
+🌱 github branchs
+
+        master : 최종 작업 상태 (배포버전)  
+        test : 개인 작업을 합치기 위한 브랜치  
+        seo : 서상균님의 개인 브랜치  
+        lee : 이은비님의 개인 브랜치
   
 🗂 디렉토리 구조
 

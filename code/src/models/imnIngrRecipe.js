@@ -11,6 +11,12 @@ module.exports = class ImnIngrRecipe extends Sequelize.Model {
                 autoIncrement: true,
                 allowNull: false,
                 primaryKey : true
+            },
+            refNum : { // sequlize가 복합 외래키를 지원하지 않아서 따로 속성으로 정의
+                type: Sequelize.INTEGER,
+                allowNull: false,
+                unique: true,
+                primaryKey : true
             }
         },{
             sequelize,
@@ -27,7 +33,6 @@ module.exports = class ImnIngrRecipe extends Sequelize.Model {
     // 관계 정의
     static associate(db) {
         this.belongsTo(db.RefEnrollIngr, {
-          
             foreignKey : {
                 name : 'ingrOrnu',
                 primaryKey : true,
@@ -35,15 +40,7 @@ module.exports = class ImnIngrRecipe extends Sequelize.Model {
             },
             targetKey : 'ingrOrnu'
         });
-        this.belongsTo(db.RefEnrollIngr, {
-   
-            foreignKey : {
-                name : 'refNum',
-                primaryKey : true,
-                allowNull : false
-            },
-            targetKey : 'refNum'
-        });
+       
         this.belongsTo(db.Recipe, {
             foreignKey : {
                 name : 'recipeNum',
