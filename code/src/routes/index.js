@@ -1,4 +1,7 @@
-const express = require('express')
-const app = express.Router()
+const express = require('express');
+const refresh = require('../middlewares/refresh');
+const router  = express.Router()
+
+router.get('/refresh', refresh)
 
 module.exports = router;
