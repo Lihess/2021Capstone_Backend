@@ -20,25 +20,15 @@ module.exports = {
     },
 
     // access token 검증
-    verityAccess : async(token) => {
+    verityAccess : (token) => {
         try {
             const decode =  jwt.verify(token, secret);
             
-            User.findByPk(decode.userNum)
-                .then((result) => {
-                    console.log(!result)
-                    if(!result)
-                        return{ result : false }
-                    else { 
-                        return { 
-                            result : true,
-                            userNum : decode.userNum,
-                            id : decode.id
-                        }
-                    }
-                }).catch((err) => {
-                    return { result : false }
-                })
+            return { 
+                result : true,
+                userNum : decode.userNum,
+                id : decode.id
+            } 
         } catch(err) {
             return { 
                 result : false,
@@ -66,7 +56,6 @@ module.exports = {
         // 검증 전 우선 같은지 확인
         if (token === userInfo.refreshToken) {
             try {
-                console.log('11')
                 jwt.verify(token, secret);
                 return { result : true };
             } catch(err){
@@ -76,7 +65,6 @@ module.exports = {
                 };
             }
         } else {
-            console.log('22')
             return { 
                 result : false,  
                 message : 'Not identical'

@@ -7,7 +7,8 @@ const RefController = require('../controllers/refController')
 const OrderController = require('../controllers/orderController')
 const ImnIngrRecipeController = require('../controllers/imnIngrRecipeController')
 const BookmarkController = require('../controllers/bookmarkRecipeController');
-const refresh = require('../middlewares/refresh');
+
+const { authJWT, authUser} = require('../middlewares/auth');
 
 // CRUD
 router.post('/', UserController.createUser);

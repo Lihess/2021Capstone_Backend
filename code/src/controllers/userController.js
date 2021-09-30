@@ -35,7 +35,7 @@ module.exports = class UserController {
 
         User.findByPk(
             // 비밀번호는 보안상의 문제로 제외.
-            userNum, {attributes: {exclude: [ 'pwd', 'salt','createdAt', 'updatedAt', 'deletedAt']}}
+            userNum, {attributes: {exclude: [ 'pwd', 'salt', 'refreshToken', 'createdAt', 'updatedAt', 'deletedAt']}}
         ).then((result) => {
             result == null 
                 ? res.status(404).json({ message: "Not Found" }) : res.status(200).json(result)
@@ -132,7 +132,7 @@ module.exports = class UserController {
                     console.log(err)
                     res.status(500).json({ message: "Internal Server Error" });
                 })
-        }
+        } else res.status(400).json({ message: "Not match" });
     }
 
     // logout
