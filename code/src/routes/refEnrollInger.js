@@ -10,4 +10,7 @@ router.get('/', RefEIController.readRefEI)
 router.put('/', RefEIController.updateRefEI)
 router.delete('/', RefEIController.deleteRefEI)
 
+// API
+router.get('/list-type', RefEIController.readRefEIsByType)
+
 module.exports = router;
