@@ -100,4 +100,21 @@ module.exports = class RefEIController {
             })
         }
     }
+
+    // 해당 냉장고에서 특정 보관방법을 가진 모든 식자재 리스트 읽기 API 
+    static async readRefEIsByType(req, res){
+        const { refNum, type } = req.query;
+
+        RefEI.findAll({
+            where : { refNum : refNum, storageMthdType : type },
+            order : [['ingrOrnu', 'ASC']],
+            attributes: {exclude: [ 'createdAt', 'updatedAt', 'deletedAt']}
+        }).then((result) => {
+            res.status(200).json(result)
+        }).catch((err) => {
+            if(err.name == 'SequelizeForeignKeyConstraintError')
+                res.status(404).json({ message: "Ref Not Found" })
+            else res.status(500).json({ message: "Internal Server Error" });
+        })
+    }
 }

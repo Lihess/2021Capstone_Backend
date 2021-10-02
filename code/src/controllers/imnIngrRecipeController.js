@@ -3,6 +3,8 @@
 const { Recipe, RefEnrollIngr, sequelize } = require('../models')
 const IIR = require('../models/imnIngrRecipe')
 
+const schedule = require('node-schedule')
+const Sequelize = require('sequelize')
 module.exports = class ImnIngrRecipeController {
     static async createIIR(req, res){
         const { refNum, ingrOrnu, recipeNum } = req.body
@@ -94,7 +96,7 @@ module.exports = class ImnIngrRecipeController {
 
     static async readIIRByUser(req, res){
         const { userNum } = req.params
-       
+        
         IIR.findAll({
             where : {
                 refNum : [sequelize.literal(`SELECT ref_num FROM ref WHERE owner_num=${userNum}`)]
@@ -102,13 +104,58 @@ module.exports = class ImnIngrRecipeController {
             order : [['refNum', 'ASC'], ['ingrOrnu', 'ASC']],
             include: [
                 { model : Recipe, attributes: {exclude: [ 'createdAt', 'updatedAt', 'deletedAt']}},
-                { model : RefEnrollIngr, attributes: {exclude: [ 'refNum', 'ingrOrnu', 'createdAt', 'updatedAt', 'deletedAt']}}
+                { model : RefEnrollIngr
+                , attributes: {exclude: [ 'refNum', 'ingrOrnu', 'createdAt', 'updatedAt', 'deletedAt']}}
             ],
             attributes: {exclude: [ 'recipeNum','createdAt', 'updatedAt', 'deletedAt']}
         }).then((result) => {
             res.status(200).json(result)
         }).catch((err) => {
+            console.log(err)
             res.status(500).json({ message: "Internal Server Error" });
         })
     }
+
+    static async readOnlyIngrByUser(req, res){
+        const { userNum } = req.params
+       
+        IIR.findAll({
+            where : {
+                refNum : [sequelize.literal(`SELECT ref_num FROM ref WHERE owner_num=${userNum}`)]
+            },
+            order : [['refNum', 'ASC'], ['ingrOrnu', 'ASC']],
+            include: [{ model : RefEnrollIngr, attributes: {exclude: [ 'createdAt', 'updatedAt', 'deletedAt']}}],
+            attributes: {exclude: ['recipeNum','createdAt', 'updatedAt', 'deletedAt']},
+            // 그룹화를 통해 동일한 식자재는 한번만 호출되도록.
+            group : ['refNum', 'ingrOrnu']
+        }).then((result) => {
+            // 응답 데이터 형식을 맞추기 위해서.
+            const ingrList = { imnIngrs : result.map((result) => result.RefEnrollIngr) }
+            
+            res.status(200).json( ingrList)
+        }).catch((err) => {
+            res.status(500).json({ message: "Internal Server Error" });
+        })
+    }
+
+
+
 }
+
+// 스케줄러, 매일 정각 사용기간이 3일 남은 식자재를 엔터티로 사용.
+const createIIRS = schedule.scheduleJob('0 * * * * ', async() => {
+    // 남은 사용기간이 3일인 식자재와 그 식자재를 사용하는 레시피를 검색하는 쿼리.
+    // rowNum을 이용하여 recipeOrnu를 일정하게 부여
+    const query = `
+        select @rowNum := @rowNum+1 as recipeOrnu, y.ref_num as refNum, y.ingr_ornu as ingrOrnu, x.recipe_num as recipeNum 
+        from recipe_ingr as x, ref_enroll_ingr as y, (SELECT @rowNum:=0) R
+        where (x.ingr_name = y.ingr_name) and datediff(y.expy_date, now()) = 3;
+    `
+    sequelize.query(query, { type : Sequelize.QueryTypes.SELECT }) // type : 중복 방식을 위해서
+            .then((list) => {
+                // IIR 대량 생성
+                IIR.bulkCreate(list)
+                    .then((result) => { console.log( result.length, "IIR Bluk Create Success ") })
+                    .catch((err) => { console.log("error : ", err) })
+            }).catch((err) => {  console.log("error : ", err) })
+})

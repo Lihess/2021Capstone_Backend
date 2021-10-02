@@ -40,6 +40,10 @@ module.exports = class User extends Sequelize.Model {
             salt : { // 암호화된 비밀번호 일치여부를 알기 위해
                 type : Sequelize.STRING(15),
                 allowNull: false
+            },
+            refreshToken : {
+                type : Sequelize.STRING,
+                allowNull: true
             }
         },{
             sequelize,

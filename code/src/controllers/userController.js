@@ -1,6 +1,7 @@
 // 21.09.18 이은비
 // User에 대한 데이터 처리부분
 const User = require('../models/user')
+const jwt = require('../utils/jwt')
 var crypto = require('crypto');
 
 module.exports = class UserController {
@@ -34,7 +35,7 @@ module.exports = class UserController {
 
         User.findByPk(
             // 비밀번호는 보안상의 문제로 제외.
-            userNum, {attributes: {exclude: [ 'pwd', 'salt','createdAt', 'updatedAt', 'deletedAt']}}
+            userNum, {attributes: {exclude: [ 'pwd', 'salt', 'refreshToken', 'createdAt', 'updatedAt', 'deletedAt']}}
         ).then((result) => {
             result == null 
                 ? res.status(404).json({ message: "Not Found" }) : res.status(200).json(result)
@@ -104,5 +105,49 @@ module.exports = class UserController {
             })
 
         }
+    }
+
+    // login
+    static async login(req, res) {
+        const { id, pwd } = req.body
+        
+        const userInfo = await User.findOne({where : { id : id }}) 
+        let hashPassword = crypto.createHash("sha512").update(pwd + userInfo.salt).digest("hex");
+
+        if (hashPassword === userInfo.pwd) {
+            const accessToken = jwt.accessToken(userInfo);
+            const refreshToken = jwt.refreshToken();
+
+            // DB에 refresh token 저장.
+            User.update({
+                    refreshToken : refreshToken
+                }, { 
+                    where : {id : id} 
+                }).then((result) => {
+                    res.status(200).json({ 
+                        accessToken : accessToken,
+                        refreshToken : refreshToken
+                    })
+                }).catch((err) => {
+                    console.log(err)
+                    res.status(500).json({ message: "Internal Server Error" });
+                })
+        } else res.status(400).json({ message: "Not match" });
+    }
+
+    // logout
+    static async logout(req, res){
+        const { id } = req.params;
+
+        User.update({
+                refreshToken : null
+            },{
+                where : { id : id }
+        }).then((result) => {
+            res.status(200).json()
+        }).catch((err) => {
+            console.log(err)
+            res.status(500).json({ message: "Internal Server Error" });
+        })
     }
 }

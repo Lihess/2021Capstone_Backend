@@ -97,7 +97,7 @@ module.exports = class RefController {
         }
     }
 
-    static async readRefbyUser(req, res){
+    static async readRefByUser(req, res){
         const { ownerNum } = req.params
 
         Ref.findAll({
@@ -106,11 +106,25 @@ module.exports = class RefController {
             include: [{model : RefEnrollIngr, order : [['ingrOrnu', 'ASC']], attributes: {exclude: [ 'refNum','createdAt', 'updatedAt', 'deletedAt']}, as : 'enrollIngrs'}], 
             attributes: {exclude: [ 'createdAt', 'updatedAt', 'deletedAt']}
         }).then((result) => {
-            console.log(result)
-            result == null 
-                ? res.status(404).json({ message: "Not Found" }) : res.status(200).json(result)
+            res.status(200).json(result)
         }).catch((err) => {
             console.log(err)
+            res.status(500).json({ message: "Internal Server Error" });
+        })
+    }
+
+    static async readRefNumsByUser(req, res) {
+        const { ownerNum } = req.params;
+
+        Ref.findAll({
+            raw: false,
+            where : { ownerNum : ownerNum },
+            order : [['refNum', 'ASC']],
+            attributes: ['refNum']
+        }).then((result) => {
+            const numList = { 'refNums' : result.map((result) => result.refNum)}
+            res.status(200).json(numList)
+        }).catch((err) => {
             res.status(500).json({ message: "Internal Server Error" });
         })
     }
