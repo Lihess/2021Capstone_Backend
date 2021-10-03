@@ -103,9 +103,8 @@ module.exports = class ImnIngrRecipeController {
             },
             order : [['refNum', 'ASC'], ['ingrOrnu', 'ASC']],
             include: [
-                { model : Recipe, attributes: {exclude: [ 'createdAt', 'updatedAt', 'deletedAt']}},
-                { model : RefEnrollIngr
-                , attributes: {exclude: [ 'refNum', 'ingrOrnu', 'createdAt', 'updatedAt', 'deletedAt']}}
+                { model : Recipe, attributes: {exclude: [ 'createdAt', 'updatedAt', 'deletedAt']}, as : 'recipe'},
+                { model : RefEnrollIngr, attributes: {exclude: [ 'refNum', 'ingrOrnu', 'createdAt', 'updatedAt', 'deletedAt']}, as : 'refEnrollIngr'}
             ],
             attributes: {exclude: [ 'recipeNum','createdAt', 'updatedAt', 'deletedAt']}
         }).then((result) => {
