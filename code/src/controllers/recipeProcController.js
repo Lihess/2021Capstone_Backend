@@ -54,7 +54,8 @@ module.exports = class RecipeProcController {
         } else {
             RecipeProc.update({
                     explan : explan || procInfo.explan, 
-                    picPath : picPath || procInfo.picPath
+                    // 선택 속성에서 문자열 null로 요청이 들어올 경우 값을 null 설정
+                    picPath :  picPath == "null" ? null :  picPath || procInfo.picPath
                 }, { 
                     where : { recipeNum : recipeNum, procOrnu : procOrnu }
                 }) .then((result) => {
@@ -62,8 +63,9 @@ module.exports = class RecipeProcController {
                     res.status(200).json({
                         recipeNum : recipeNum,
                         procOrnu : procOrnu,
-                        explan : explan || procInfo.explan, 
-                        picPath : picPath || procInfo.picPath
+                        explan : explan || procInfo.explan,
+                        // 선택 속성에서 문자열 null로 요청이 들어올 경우 값을 null 설정
+                        picPath :  picPath == "null" ? null :  picPath || procInfo.picPath
                     })
             }).catch((err) => {
                 res.status(500).json({ message: "Internal Server Error" });

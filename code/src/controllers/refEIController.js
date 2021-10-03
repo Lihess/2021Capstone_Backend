@@ -63,7 +63,8 @@ module.exports = class RefEIController {
                 expyDate : expyDate || refEIInfo.expyDate, 
                 quantity : quantity || refEIInfo.quantity, 
                 storageMthdType : storageMthdType || refEIInfo.storageMthdType, 
-                presetIngrNum : presetIngrNum || refEIInfo.presetIngrNum
+                // 선택 속성에서 문자열 null로 요청이 들어올 경우 값을 null 설정
+                presetIngrNum : presetIngrNum == "null" ? null : presetIngrNum || refEIInfo.presetIngrNum
             }, { 
                 where : {refNum : refNum, ingrOrnu : ingrOrnu}
             }).then((result) => {
@@ -76,7 +77,7 @@ module.exports = class RefEIController {
                     expyDate : expyDate || refEIInfo.expyDate, 
                     quantity : quantity || refEIInfo.quantity, 
                     storageMthdType : storageMthdType || refEIInfo.storageMthdType, 
-                    presetIngrNum : presetIngrNum || refEIInfo.presetIngrNum
+                    presetIngrNum : presetIngrNum == "null" ? null : presetIngrNum || refEIInfo.presetIngrNum
                 })
             }).catch((err) => {
                 if (err.name == 'SequelizeValidationError') 
