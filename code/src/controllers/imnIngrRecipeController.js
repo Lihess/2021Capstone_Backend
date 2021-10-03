@@ -94,7 +94,8 @@ module.exports = class ImnIngrRecipeController {
         }
     }
 
-    static async readIIRByUser(req, res){
+    // 사용자의 모든 임박 식자재와 그에 대한 레시피 read
+    static async readIIRsByUser(req, res){
         const { userNum } = req.params
         
         IIR.findAll({
@@ -116,7 +117,8 @@ module.exports = class ImnIngrRecipeController {
         })
     }
 
-    static async readOnlyIngrByUser(req, res){
+    // 사용자의 모든 임박 식자재 read
+    static async readImnIngrsByUser(req, res){
         const { userNum } = req.params
        
         IIR.findAll({

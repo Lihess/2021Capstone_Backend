@@ -21,11 +21,11 @@ router.post('/login', UserController.login)
 router.get('/logout/:id', UserController.logout)
 
 // API
-router.get('/:ownerNum/refs', RefController.readRefByUser)
+router.get('/:ownerNum/refs', RefController.readRefsByUser)
 router.get('/:ownerNum/ref-nums', RefController.readRefNumsByUser)
-router.get('/:ordererNum/orders', OrderController.readOrderByUser)
-router.get('/:userNum/imn-ingr-recipes', ImnIngrRecipeController.readIIRByUser)
-router.get('/:userNum/imn-ingrs', ImnIngrRecipeController.readOnlyIngrByUser)
-router.get('/:userNum/bookmarks', BookmarkController.readBookmarkByUser)
+router.get('/:ordererNum/orders', OrderController.readOrdersByUser)
+router.get('/:userNum/imn-ingr-recipes', ImnIngrRecipeController.readIIRsByUser)
+router.get('/:userNum/imn-ingrs', ImnIngrRecipeController.readImnIngrsByUser)
+router.get('/:userNum/bookmarks', BookmarkController.readBookmarksByUser)
 
 module.exports = router;

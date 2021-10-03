@@ -88,7 +88,8 @@ module.exports = class BookmarkController {
         }
     }
 
-    static async readBookmarkByUser(req, res){
+    // 사용자의 모든 즐겨찾기 레시피 read
+    static async readBookmarksByUser(req, res){
         const { userNum } = req.params;
 
         BookmarkRecipe.findAll({
