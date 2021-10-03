@@ -1,5 +1,6 @@
 // 21.09.25 이은비
 // Order에 대한 데이터 처리부분
+const { Sequelize } = require('../models');
 const OrderProduct = require('../models/orderProduct')
 
 module.exports = class OrderProductController {
@@ -7,10 +8,14 @@ module.exports = class OrderProductController {
         const { orderNum, productName, quantity } = req.body
     
         // 순번을 일정하게 부여하기 위해서
-        const countOrnu = await OrderProduct.count({ where : { orderNum : orderNum }})
+        const { lastOrnu } = await OrderProduct.findOne({ 
+                                    where : { orderNum : orderNum },
+                                    attributes : [[Sequelize.fn('max', Sequelize.col('product_ornu')), 'lastOrnu']],
+                                    raw: true
+                                })
 
         OrderProduct.create({
-            orderNum, productOrnu : countOrnu + 1, productName, quantity
+            orderNum, productOrnu : lastOrnu + 1, productName, quantity
         }).then((result)=> {
             res.status(200).json({
                 orderNum : result.orderNum,

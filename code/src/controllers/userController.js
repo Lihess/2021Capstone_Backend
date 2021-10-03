@@ -65,7 +65,8 @@ module.exports = class UserController {
                     pwd : hashPassword || userInfo.pwd,
                     nickname : nickname || userInfo.nickname, 
                     email : email || userInfo.email, 
-                    linkId : linkId || userInfo.linkId,
+                    // 선택 속성에서 문자열 null로 요청이 들어올 경우 값을 null 설정
+                    linkId : linkId == "null" ? null : linkId || userInfo.linkId,
                     salt : salt || userInfo.salt
                 }, { 
                     where : {userNum : userNum}
@@ -77,7 +78,7 @@ module.exports = class UserController {
                     id : id || userInfo.id,
                     nickname : nickname || userInfo.nickname, 
                     email : email || userInfo.email, 
-                    linkId : linkId || userInfo.linkId,
+                    linkId : linkId == "null" ? null : linkId || userInfo.linkId,
                 })
             }).catch((err) => {
                 // 유효성 검사에 따른 응답

@@ -53,7 +53,8 @@ module.exports = class RefController {
         } else {
             Ref.update({
                 refName : refName || refInfo.refName, 
-                explan : explan || refInfo.explan, 
+                // 선택 속성에서 문자열 null로 요청이 들어올 경우 값을 null 설정
+                explan : explan == "null" ? null : explan || refInfo.explan, 
                 refType : refType || refInfo.refType, 
                 ownerNum : ownerNum || refInfo.ownerNum, 
                 colorCode : colorCode || refInfo.colorCode
@@ -64,7 +65,7 @@ module.exports = class RefController {
                 res.status(200).json({
                     refNum : refNum,
                     refName : refName || refInfo.refName, 
-                    explan : explan || refInfo.explan, 
+                    explan : explan == "null" ? null : explan || refInfo.explan, 
                     refType : refType || refInfo.refType, 
                     ownerNum : ownerNum || refInfo.ownerNum, 
                     colorCode : colorCode || refInfo.colorCode
