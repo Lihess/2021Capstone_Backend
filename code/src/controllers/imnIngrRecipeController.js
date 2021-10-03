@@ -9,10 +9,14 @@ module.exports = class ImnIngrRecipeController {
     static async createIIR(req, res){
         const { refNum, ingrOrnu, recipeNum } = req.body
 
-        const countOrnu = await IIR.count({ where : {refNum : refNum, ingrOrnu : ingrOrnu} })
+        const { lastOrnu } = await IIR.findOne({ 
+                                where : { refNum : refNum, ingrOrnu : ingrOrnu},
+                                attributes : [[Sequelize.fn('max', Sequelize.col('recipe_ornu')), 'lastOrnu']],
+                                raw: true
+                            })
 
         IIR.create({
-            refNum, ingrOrnu, recipeOrnu : countOrnu + 1, recipeNum
+            refNum, ingrOrnu, recipeOrnu : lastOrnu + 1, recipeNum
         }).then((result)=> {
             res.status(200).json({
                 refNum : result.refNum, 

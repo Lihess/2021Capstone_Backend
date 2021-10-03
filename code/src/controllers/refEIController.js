@@ -1,15 +1,20 @@
 // 21.09.25 이은비
 // RefEnrollIngr에 대한 데이터 처리부분
+const { Sequelize } = require('../models');
 const RefEI = require('../models/refEnrollIngr')
 
 module.exports = class RefEIController {
     static async createRefEI(req, res){
         const {refNum, ingrName, expyDate, quantity, storageMthdType, presetIngrNum} = req.body
-
-        const countOrnu = await RefEI.count({where : {refNum : refNum}})
+        console.log(storageMthdType)
+        const { lastOrnu } = await RefEI.findOne({
+                                where : {refNum : refNum},
+                                attributes : [[Sequelize.fn('max', Sequelize.col('ingr_ornu')), 'lastOrnu']],
+                                raw: true
+                            })
         
         RefEI.create({
-            refNum, ingrOrnu : countOrnu + 1, ingrName, expyDate, quantity, storageMthdType, presetIngrNum
+            refNum, ingrOrnu : lastOrnu + 1, ingrName, expyDate, quantity, storageMthdType, presetIngrNum
         }).then((result)=> {
             res.status(200).json({
                 refNum : result.refNum, 

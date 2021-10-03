@@ -1,16 +1,20 @@
 // 21.09.26 이은비
 // Bookmark에 대한 데이터 처리부분
-const { Recipe } = require('../models')
+const { Recipe, Sequelize } = require('../models')
 const BookmarkRecipe = require('../models/bookmarkRecipe')
 
 module.exports = class BookmarkController {
     static async createBookmark(req, res){
         const { userNum, recipeNum } = req.body
 
-        const countOrnu = await BookmarkRecipe.count({ where : { userNum : userNum }})
+        const { lastOrnu } = await BookmarkRecipe.findOne({ 
+                                where : { userNum : userNum },
+                                attributes : [[Sequelize.fn('max', Sequelize.col('bookmark_ornu')), 'lastOrnu']],
+                                raw: true
+                            })
 
         BookmarkRecipe.create({
-            userNum, recipeNum, bookmarkOrnu : countOrnu + 1
+            userNum, recipeNum, bookmarkOrnu : lastOrnu + 1
         }).then((result)=> {
             res.status(200).json({
                 userNum : result.userNum, 
