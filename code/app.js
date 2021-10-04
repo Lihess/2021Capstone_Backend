@@ -30,7 +30,9 @@ const imnIngrReciepRouer = require('./src/routes/imnIngrRecipe')
 const bookmarkRecipeRouter = require('./src/routes/bookmarkRecipe');
 const indexRouter = require('./src/routes/index');
 const recipeIngrRouter = require('./src/routes/recipeIngr');
-const recipeProcRouter = require('./src/routes/recipeProc')
+const recipeProcRouter = require('./src/routes/recipeProc');
+const recipeRouter = require('./src/routes/recipe');
+const presetIngrRouter = require('./src/routes/presetIngr')
 
 app.use('/api/user', userRouter)
 app.use('/api/ref', refRouter)
@@ -42,5 +44,7 @@ app.use('/api/imn-ingr-recipe', imnIngrReciepRouer)
 app.use('/api', indexRouter)
 app.use('/api/recipe-ingr', recipeIngrRouter)
 app.use('/api/recipe-proc', recipeProcRouter)
+app.use('/api/recipe', recipeRouter)
+app.use('/api/preset-ingr', presetIngrRouter)
 
 app.listen(3000, () => console.log('...lisen port 3000'))
