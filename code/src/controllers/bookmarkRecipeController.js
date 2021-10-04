@@ -68,7 +68,7 @@ module.exports = class BookmarkController {
             }).catch((err) => {
                 console.log(err)
                 if(err.name == 'SequelizeForeignKeyConstraintError')
-                    res.status(404).json({ message: "User or Reicpe Not Found" })
+                    res.status(404).json({ message: "Reicpe Not Found" })
                 else res.status(500).json({ message: "Internal Server Error" });
             })
         }

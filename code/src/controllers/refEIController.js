@@ -6,7 +6,7 @@ const RefEI = require('../models/refEnrollIngr')
 module.exports = class RefEIController {
     static async createRefEI(req, res){
         const {refNum, ingrName, expyDate, quantity, storageMthdType, presetIngrNum} = req.body
-        console.log(storageMthdType)
+        
         const { lastOrnu } = await RefEI.findOne({
                                 where : {refNum : refNum},
                                 attributes : [[Sequelize.fn('max', Sequelize.col('ingr_ornu')), 'lastOrnu']],
@@ -82,8 +82,6 @@ module.exports = class RefEIController {
             }).catch((err) => {
                 if (err.name == 'SequelizeValidationError') 
                     res.status(400).json({message : "TYPE must be in ('f', 'r', 'a')"}) 
-                else if(err.name == 'SequelizeForeignKeyConstraintError')
-                    res.status(404).json({ message: "Ref or PresetIngr Not Found" })
                 else res.status(500).json({ message: "Internal Server Error" });
             })
         }

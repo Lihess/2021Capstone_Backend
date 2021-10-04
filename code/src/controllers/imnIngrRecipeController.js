@@ -74,7 +74,7 @@ module.exports = class ImnIngrRecipeController {
                 })
             }).catch((err) => {
                 if(err.name == 'SequelizeForeignKeyConstraintError')
-                    res.status(404).json({ message: "EnrollIngr or Recipe Not Found" })
+                    res.status(404).json({ message: "Recipe Not Found" })
                 else res.status(500).json({ message: "Internal Server Error" });
             })
         }
@@ -148,7 +148,7 @@ module.exports = class ImnIngrRecipeController {
 }
 
 // 스케줄러, 매일 정각 사용기간이 3일 남은 식자재를 엔터티로 사용.
-const createIIRS = schedule.scheduleJob('0 * * * * ', async() => {
+const createIIRS = schedule.scheduleJob('0 0 0 1/1 * ? * ', async() => {
     // 남은 사용기간이 3일인 식자재와 그 식자재를 사용하는 레시피를 검색하는 쿼리.
     // rowNum을 이용하여 recipeOrnu를 일정하게 부여
     const query = `

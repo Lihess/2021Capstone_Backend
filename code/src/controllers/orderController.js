@@ -61,9 +61,7 @@ module.exports = class OrderController {
                     ordererNum : ordererNum
                 })
             }).catch((err) => {
-                if(err.name == 'SequelizeForeignKeyConstraintError')
-                    res.status(404).json({ message: "User Not Found" })
-                else res.status(500).json({ message: "Internal Server Error" });
+                res.status(500).json({ message: "Internal Server Error" });
             })
         }
     }

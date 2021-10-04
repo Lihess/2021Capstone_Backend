@@ -11,6 +11,7 @@ module.exports = class RefController {
             refName, explan, refType, ownerNum, colorCode
         }).then((result)=> {
             res.status(200).json({
+                refNum : result.refNum,
                 refName : result.refName, 
                 explan : result.explan, 
                 refType : result.refType,
@@ -73,8 +74,6 @@ module.exports = class RefController {
             }).catch((err) => {
                 if (err.name == 'SequelizeValidationError') 
                     res.status(400).json({message : "TYPE must be in ('h', 'k', 'v', 'f', 'r')"}) 
-                else if(err.name == 'SequelizeForeignKeyConstraintError')
-                    res.status(404).json({ message: "User Not Found" })
                 else res.status(500).json({ message: "Internal Server Error" });
             })
         }
