@@ -49,7 +49,8 @@ module.exports = class RecipeController {
                 title : title || recipeInfo.title,
                 reqTime : reqTime || recipeInfo.reqTime,
                 serve : serve || recipeInfo.serve,
-                picPath : picPath || recipeInfo.picPath
+                // 선택 속성에서 문자열 null로 요청이 들어올 경우 값을 null 설정
+                picPath : picPath == "null" ? null : picPath || recipeInfo.picPath
             }, {
                 where : {recipeNum : recipeNum}
             }).then((result) => {
@@ -59,7 +60,7 @@ module.exports = class RecipeController {
                     title : title || recipeInfo.title,
                     reqTime : reqTime || recipeInfo.reqTime,
                     serve : serve || recipeInfo.serve,
-                    picPath : picPath || recipeInfo.picPath
+                    picPath : picPath == "null" ? null : picPath || recipeInfo.picPath
                 })
             }).catch((err) => {
                 res.status(500).json({message : "Internal Server Error"});
