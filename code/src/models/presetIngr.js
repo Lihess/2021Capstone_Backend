@@ -7,23 +7,27 @@ module.exports = class PresetIngr extends Sequelize.Model {
     static init(sequelize) {
         return super.init({
             presetIngrNum : {
-                type : Sequelize.INTEGER,
-                allowNull: false,
+                type: Sequelize.INTEGER,
                 autoIncrement: true,
-                unique: true,
+                allowNull: false,
                 primaryKey : true
             },
-            prsetIngrName : {
+            presetIngrName : {
                 type: Sequelize.STRING(30),
                 allowNull : false
             },
-            expyDate : {
-                type: Sequelize.DATEONLY,
+            shelfLife: {
+                type: Sequelize.DECIMAL(4),
                 allowNull : false
             },
             ingrType : {
                 // 'g : 곡물(기본), v : 야채, f : 과일, m : 육류, a : 수산물, s : 양념, c : 조미료, d : 유제품, b : 음료, e : 기타' 내에서만
                 type : Sequelize.ENUM('g', 'v', 'f', 'm', 'a', 's', 'c', 'd', 'b', 'e'),
+                validate: {
+                    isIn : {
+                        args: [['g', 'v', 'f', 'm', 'a', 's', 'c', 'd', 'b', 'e']],
+                    }
+                },
                 allowNull : false,
                 defaultValue : 'g'
             }
@@ -31,7 +35,7 @@ module.exports = class PresetIngr extends Sequelize.Model {
             sequelize,
             timestamps: true,
             underscored: true,
-            modelName: 'Presetingr',
+            modelName: 'PresetIngr',
             tableName: 'preset_ingr',
             paranoid: false,
             charset: 'utf8',
