@@ -29,6 +29,16 @@
             git merge 병합할브랜치 
 
 
+📜 github 사용법 : 매번 코딩 후 해야할 것  
+
+        1. git pull origin test : 혹시나 제가 test에 한 것이 있다면 받는 명령어  
+        2. git checkout Seo : Seo 브랜치로 이동  
+        3. git commit -m "키워드 : 내용 (#이슈번호)" : 이슈가 없는 내용이라면 이슈번호 생략가능. 키워드는 참고 문서를  참고해주세요!  
+        4. git push : 깃허브에 올리기  
+        5. git checkout test : test로 이동  
+        6. git merge Seo : Seo랑 병합  
+        7. git push : 깃허브에 올리기기  
+
 🌱 github branchs
 
         master : 최종 작업 상태 (배포버전)  
