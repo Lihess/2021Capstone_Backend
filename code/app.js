@@ -48,4 +48,6 @@ app.use('/api/recipe-proc', recipeProcRouter)
 app.use('/api/imn-ingr-recipe', imnIngrReciepRouer)
 app.use('/api/bookmark-recipe', bookmarkRecipeRouter)
 
+// 배포 확인용
+app.get('/', (req, res) => res.send("Hello World!"))
 app.listen(3000, () => console.log('...lisen port 3000'))
