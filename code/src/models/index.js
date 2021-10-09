@@ -23,14 +23,14 @@ const db = {
 
 // 배포 시 production로 수정.
 const env = process.env.NODE_ENV || 'development';
-const config = require('../config/config.json')[env];
+//const config = require('../config/config.json')[env];
 
 // config 연결
 const sequelize = new Sequelize(
-    process.env.DATABASE || config.database,
-    process.env.USERNAME || config.username,
-    process.env.PASSWORD || config.password,
-    config
+    process.env.DATABASE ,
+    process.env.USERNAME, 
+    process.env.PASSWORD,
+    //config
 )
 
 const Models = Object.keys(db);
