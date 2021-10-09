@@ -48,8 +48,5 @@ app.use('/api/recipe-proc', recipeProcRouter)
 app.use('/api/imn-ingr-recipe', imnIngrReciepRouer)
 app.use('/api/bookmark-recipe', bookmarkRecipeRouter)
 
-// 배포 확인용
 var port = process.env.PORT || 3000;
-
-app.get('/', (req, res) => res.send("Hello World!"))
 app.listen(port, () => console.log('...lisen port 3000'))

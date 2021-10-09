@@ -1,8 +1,11 @@
 // 21.09.30 이은비
 // jwt를 이용한 로그인 구현을 위해 유틸리티 정의의
 const jwt = require('jsonwebtoken');
-const secret = process.env.JWT_SECRET_KEY || require('../config/jwt.json')["secret_key"]
 const User = require('../models/user')
+
+// 환경변수 설정정
+require('dotenv').config()
+const secret = process.env.JWT_SECRET_KEY
 
 module.exports = {
     // accessToken 발급
