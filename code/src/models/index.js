@@ -27,9 +27,9 @@ const config = require('../config/config.json')[env];
 
 // config 연결
 const sequelize = new Sequelize(
-    config.database,
-    config.username,
-    config.password,
+    process.env.DATABASE || config.database,
+    process.env.USERNAME || config.username,
+    process.env.PASSWORD || config.password,
     config
 )
 
