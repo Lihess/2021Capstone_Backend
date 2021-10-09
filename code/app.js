@@ -7,7 +7,7 @@ app.get('/', function (req, res) {
 })
 
 // DB 연결
-const models = require("../src/models/index.js");
+const models = require("./src/models/index");
 
 models.sequelize.sync().then( () => {
   console.log("...DB Link success");
@@ -21,18 +21,18 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // 라우터 연결
-const indexRouter = require('../src/routes/index');
-const userRouter = require('../src/routes/user')
-const refRouter = require('../src/routes/ref')
-const refEnrollIngrRouter = require('../src/routes/refEnrollInger')
-const presetIngrRouter = require('../src/routes/presetIngr')
-const orderRouter = require('../src/routes/order')
-const orderProductRouer = require('../src/routes/orderProduct')
-const recipeRouter = require('../src/routes/recipe')
-const recipeIngrRouter = require('../src/routes/recipeIngr')
-const recipeProcRouter = require('../src/routes/recipeProc')
-const imnIngrReciepRouer = require('../src/routes/imnIngrRecipe')
-const bookmarkRecipeRouter = require('../src/routes/bookmarkRecipe')
+const indexRouter = require('./src/routes/index');
+const userRouter = require('./src/routes/user')
+const refRouter = require('./src/routes/ref')
+const refEnrollIngrRouter = require('./src/routes/refEnrollInger')
+const presetIngrRouter = require('./src/routes/presetIngr')
+const orderRouter = require('./src/routes/order')
+const orderProductRouer = require('./src/routes/orderProduct')
+const recipeRouter = require('./src/routes/recipe')
+const recipeIngrRouter = require('./src/routes/recipeIngr')
+const recipeProcRouter = require('./src/routes/recipeProc')
+const imnIngrReciepRouer = require('./src/routes/imnIngrRecipe')
+const bookmarkRecipeRouter = require('./src/routes/bookmarkRecipe')
 
 
 app.use('/api', indexRouter)
