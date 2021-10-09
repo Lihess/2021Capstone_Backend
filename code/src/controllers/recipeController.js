@@ -1,13 +1,24 @@
 const Recipe = require('../models/recipe')
+const { Op, Sequelize } = require("sequelize");
+const { nowDate } = require('../utils/date');
 
 module.exports = class RecipeController {
 
   //create 작성
   static async createRecipe(req, res){
-      const {title, reqTime, serve, picPath} = req.body
+        const {title, reqTime, serve, picPath} = req.body
+
+        // 식별자 지정 : yymmdd0000
+        const { lastNum } = await Recipe.findOne({ 
+			where : { recipeNum  : {[Op.like] : `${nowDate()}%` }},
+			attributes : [[Sequelize.fn('max', Sequelize.col('recipe_num')), 'lastNum']],
+			raw: true
+		})
+		// 해당 날짜에 생성된 엔터티가 없다면 날짜+0001, 있다면 +1
+		const recipeNum = lastNum == null ? nowDate() + '0001' : lastNum + 1
 
         Recipe.create({
-            title, reqTime, serve, picPath
+            recipeNum, title, reqTime, serve, picPath
         }).then((result)=>{
             res.status(200).json({
                 recipeNum : result.recipeNum,

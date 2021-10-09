@@ -2,18 +2,30 @@
 // User에 대한 데이터 처리부분
 const User = require('../models/user')
 const jwt = require('../utils/jwt')
+const { Op, Sequelize } = require("sequelize");
+const { nowDate } = require('../utils/date');
 var crypto = require('crypto');
+
 
 module.exports = class UserController {
     static async createUser(req, res){
         const {id, pwd, nickname, email, linkId } = req.body;
+        
+        // 식별자 지정 : yymmdd0000
+        const { lastNum } = await User.findOne({ 
+                            where : { userNum : {[Op.like] : `${nowDate()}%` }},
+                            attributes : [[Sequelize.fn('max', Sequelize.col('user_num')), 'lastNum']],
+                            raw: true
+                        })
+        // 해당 날짜에 생성된 엔터티가 없다면 날짜+0001, 있다면 +1
+        const userNum = lastNum == null ? nowDate() + '0001' : lastNum + 1
         
         // 비밀번호 암호화
         let salt = Math.round((new Date().valueOf() * Math.random())) + "";
         let hashPassword = crypto.createHash("sha512").update(pwd + salt).digest("hex");
 
         User.create({
-            id, pwd : hashPassword, nickname, email, linkId, salt
+            userNum, id, pwd : hashPassword, nickname, email, linkId, salt
         }).then((result) => {
             // 패스워드, salt는 보안상의 문제로 제외
             res.status(200).json({

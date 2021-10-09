@@ -1,14 +1,25 @@
-// 21.09.18 이은비
+r// 21.09.18 이은비
 // Ref에 대한 데이터 처리부분
 const Ref = require('../models/ref')
 const RefEnrollIngr = require('../models/refEnrollIngr')
+const { Op, Sequelize } = require("sequelize");
+const { nowDate } = require('../utils/date');
 
 module.exports = class RefController {
     static async createRef(req, res){
         const {refName, explan, refType, ownerNum, colorCode} = req.body
 
+        // 식별자 지정 : yymmdd0000
+        const { lastNum } = await Ref.findOne({ 
+            where : { refNum : {[Op.like] : `${nowDate()}%` }},
+            attributes : [[Sequelize.fn('max', Sequelize.col('ref_num')), 'lastNum']],
+            raw: true
+        })
+        // 해당 날짜에 생성된 엔터티가 없다면 날짜+0001, 있다면 +1
+        const refNum = lastNum == null ? nowDate() + '0001' : lastNum + 1
+
         Ref.create({
-            refName, explan, refType, ownerNum, colorCode
+            refNum, refName, explan, refType, ownerNum, colorCode
         }).then((result)=> {
             res.status(200).json({
                 refNum : result.refNum,

@@ -1,13 +1,24 @@
 const PresetIngr = require('../models/presetIngr')
+const { Op, Sequelize } = require("sequelize");
+const { nowDate } = require('../utils/date');
 
 module.exports = class PresetIngrController {
 
   	//create 작성
   	static async createPresetIngr(req, res){
   	 	const { presetIngrName, shelfLife, ingrType } = req.body
+
+        // 식별자 지정 : yymmdd0000
+        const { lastNum } = await PresetIngr.findOne({ 
+			where : { presetIngrNum  : {[Op.like] : `${nowDate()}%` }},
+			attributes : [[Sequelize.fn('max', Sequelize.col('preset_ingr_num')), 'lastNum']],
+			raw: true
+		})
+		// 해당 날짜에 생성된 엔터티가 없다면 날짜+0001, 있다면 +1
+		const presetIngrNum = lastNum == null ? nowDate() + '0001' : lastNum + 1
 		
 		PresetIngr.create({
-			presetIngrName, shelfLife, ingrType 
+			presetIngrNum, presetIngrName, shelfLife, ingrType 
 		}).then((result) => {
 			res.status(200).json({
 			      presetIngrNum : result.presetIngrNum,

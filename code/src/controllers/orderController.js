@@ -1,15 +1,25 @@
 // 21.09.25 이은비
 // Order에 대한 데이터 처리부분
-const { User } = require('../models')
 const Order = require('../models/order')
 const OrderProduct = require('../models/orderProduct')
+const { Op, Sequelize } = require("sequelize");
+const { nowDate } = require('../utils/date');
 
 module.exports = class OrderController {
     static async createOrder(req, res){
         const { orderDate, ordererNum } = req.body
 
+        // 식별자 지정 : yymmdd0000
+        const { lastNum } = await Order.findOne({ 
+            where : { orderNum : {[Op.like] : `${nowDate()}%` }},
+            attributes : [[Sequelize.fn('max', Sequelize.col('order_num')), 'lastNum']],
+            raw: true
+        })
+        // 해당 날짜에 생성된 엔터티가 없다면 날짜+0001, 있다면 +1
+        const orderNum = lastNum == null ? nowDate() + '0001' : lastNum + 1
+
         Order.create({
-            orderDate, ordererNum 
+            orderNum, orderDate, ordererNum 
         }).then((result)=> {
             res.status(200).json({
                 orderNum : result.orderNum,
