@@ -1,4 +1,4 @@
-r// 21.09.18 이은비
+// 21.09.18 이은비
 // Ref에 대한 데이터 처리부분
 const Ref = require('../models/ref')
 const RefEnrollIngr = require('../models/refEnrollIngr')
