@@ -22,16 +22,19 @@ const db = {
 };
 
 // 배포 시 production로 수정.
-const env = process.env.NODE_ENV || 'development';
+const env = process.env.MYSQL || require('../config/config.json')['development'];
 //const config = require('../config/config.json')[env];
-
+console.log(env.USERNAME)
 // config 연결
 const sequelize = new Sequelize(
-    process.env.DATABASE ,
-    process.env.USERNAME, 
-    process.env.PASSWORD,
-    { host : process.env.MYSQL_HOSTNAME,dialect : 'mysql' }
-    //config
+    env.DATABASE,
+    env.USERNAME, 
+    env.PASSWORD,
+    { 
+      host : env.HOSTNAME, 
+      dialect : 'mysql', 
+      timezone : "+09:00" 
+    }
 )
 
 const Models = Object.keys(db);
