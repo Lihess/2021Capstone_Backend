@@ -1,7 +1,7 @@
 //라우터 작성
 const express = require('express');
 const router = express.Router();
-const RecipeController = require('../controllers/RecipeController');
+const RecipeController = require('../controllers/recipeController');
 
 //CRUD
 router.post('/', RecipeController.createRecipe);
