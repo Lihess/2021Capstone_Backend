@@ -4,7 +4,7 @@ const router = express.Router();
 const PresetIngrController = require('../controllers/presetIngrController');
 
 // API
-router.get('/search-list', PresetIngrController.searchPresetIngr)
+router.get('/search-list', PresetIngrController.searchPresetIngrs)
 
 //CRUD
 router.post('/', PresetIngrController.createPresetIngr);

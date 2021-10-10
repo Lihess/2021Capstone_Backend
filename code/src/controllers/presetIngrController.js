@@ -99,7 +99,7 @@ module.exports = class PresetIngrController {
   	}
 
 	// search API
-	static async searchPresetIngr(req, res){
+	static async searchPresetIngrs(req, res){
 		const {type, keyword} = req.query
 		var list = null
 
