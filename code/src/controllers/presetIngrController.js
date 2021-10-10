@@ -75,7 +75,7 @@ module.exports = class PresetIngrController {
   	    	}).catch((err) => {
   	      		if (err.name == 'SequelizeValidationError') 
                 	res.status(400).json({message : "TYPE must be in ('g', 'v', 'f', 'm', 'a', 's', 'c', 'd', 'b', 'e')"}) 
-            	else res.status(500).json({message : "Internal ingrTyper Error"});
+            	else res.status(500).json({message : "Internal Server Error"});
   	    	})
   	  	}
   	}
@@ -93,8 +93,54 @@ module.exports = class PresetIngrController {
   	  	  	}).then((result) => {
   	  	  	  	res.status(200).json()
   	  	  	}).catch((err) => {
-  	  	  	  	res.status(500).json({ message : "Internal ingrTyper Error "});
+  	  	  	  	res.status(500).json({ message : "Internal  Server Error "});
   	  	  	})
   	  	}
   	}
+
+	// search API
+	static async searchPresetIngr(req, res){
+		const {type, keyword} = req.query
+		var list = null
+
+		// type, keyword 모두 입력으로 들어온 경우
+		if(type && keyword) {
+			list = await PresetIngr.findAll({
+					where : { presetIngrName : { [Op.like] : `%${keyword}%` }, ingrType : type },
+					// 정확도 순서대로 정렬
+					order : [Sequelize.literal(`CASE WHEN preset_ingr_name='${keyword}' THEN 1 
+												WHEN preset_ingr_name='${keyword}%' THEN 2 
+												WHEN preset_ingr_name='%${keyword}%' THEN 3
+												ELSE 4 END`)],
+					attributes: {exclude: ['createdAt', 'updatedAt', 'deletedAt']}
+				}).catch((err) => {console.log(err)
+					res.status(500).json({ message : "Internal  Server Error "});
+			  	})
+		}
+		// keyword만 입력으로 들어온 경우
+		else if(!type && keyword) {
+			list = await PresetIngr.findAll({
+					where : {presetIngrName : { [Op.like] : `%${keyword}%` }},
+					// 정확도 순서대로 정렬
+					order : [Sequelize.literal(`CASE WHEN preset_ingr_name='${keyword}' THEN 1 
+												WHEN preset_ingr_name='${keyword}%' THEN 2 
+												WHEN preset_ingr_name='%${keyword}%' THEN 3
+												ELSE 4 END`)],
+					attributes: {exclude: ['createdAt', 'updatedAt', 'deletedAt']}
+				}).catch((err) => {
+					res.status(500).json({ message : "Internal  Server Error "});
+			  	})
+		}
+		// type만 입력으로 들어온 경우
+		else if(type && !keyword) {
+			list = await PresetIngr.findAll({
+				where : { ingrType : type },
+				attributes: {exclude: ['createdAt', 'updatedAt', 'deletedAt']}
+			}).catch((err) => {
+				res.status(500).json({ message : "Internal  Server Error "});
+		  	})
+		}
+
+		res.status(200).json(list)
+	}
 }
