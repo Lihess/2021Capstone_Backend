@@ -28,9 +28,12 @@ const sequelize = new Sequelize(
   process.env.MYSQL_USERNAME, 
   process.env.MYSQL_PASSWORD,
     { 
+      dialectOptions : {
+        useUTC: false, // for reading from database
+      },
       host : process.env.MYSQL_HOSTNAME, 
       dialect : 'mysql', 
-      timezone : "+09:00" 
+      timezone : "+09:00",
     }
 )
 
