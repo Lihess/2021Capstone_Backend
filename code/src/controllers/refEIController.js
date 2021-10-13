@@ -1,7 +1,7 @@
 // 21.09.25 이은비
 // RefEnrollIngr에 대한 데이터 처리부분
 const { Sequelize } = require('../models');
-const RefEI = require('../models/refEnrollIngr')
+const RefEI = require('../models/refEnrollIngr');
 
 module.exports = class RefEIController {
     static async createRefEI(req, res){
@@ -14,7 +14,7 @@ module.exports = class RefEIController {
                             })
         
         RefEI.create({
-            refNum, ingrOrnu : lastOrnu + 1, ingrName, expyDate, quantity, storageMthdType, presetIngrNum
+            refNum, ingrOrnu : lastOrnu + 1, ingrName, expyDate, enrollDate : new Date().toLocaleDateString('ko-KR'), quantity, storageMthdType, presetIngrNum
         }).then((result)=> {
             res.status(200).json({
                 refNum : result.refNum, 
