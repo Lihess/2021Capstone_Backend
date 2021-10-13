@@ -2,6 +2,7 @@
 // User에 대한 데이터 처리부분
 const User = require('../models/user')
 const jwt = require('../utils/jwt')
+const axios = require('axios');
 const { Op, Sequelize } = require("sequelize");
 const { nowDate } = require('../utils/date');
 var crypto = require('crypto');
@@ -47,7 +48,7 @@ module.exports = class UserController {
 
         User.findByPk(
             // 비밀번호는 보안상의 문제로 제외.
-            userNum, {attributes: {exclude: [ 'pwd', 'salt', 'refreshToken', 'createdAt', 'updatedAt', 'deletedAt']}}
+            userNum, {attributes: {exclude: [ 'pwd', 'salt', 'refreshToken', 'linkToken','createdAt', 'updatedAt', 'deletedAt']}}
         ).then((result) => {
             result == null 
                 ? res.status(404).json({ message: "Not Found" }) : res.status(200).json(result)
@@ -57,7 +58,7 @@ module.exports = class UserController {
     }
 
     static async updateUser(req, res) {
-        const {userNum, id, pwd, nickname, email, linkId} = req.body
+        const {userNum, id, pwd, nickname, email, linkId, linkToken} = req.body
         let salt, hashPassword = null
 
         // 비밀번호 변경 시, 비밀번호 암호화
@@ -79,6 +80,7 @@ module.exports = class UserController {
                     email : email || userInfo.email, 
                     // 선택 속성에서 문자열 null로 요청이 들어올 경우 값을 null 설정
                     linkId : linkId == "null" ? null : linkId || userInfo.linkId,
+                    linkToken : linkToken == "null" ? null : linkToken || userInfo.linkToken,
                     salt : salt || userInfo.salt
                 }, { 
                     where : {userNum : userNum}
@@ -91,6 +93,7 @@ module.exports = class UserController {
                     nickname : nickname || userInfo.nickname, 
                     email : email || userInfo.email, 
                     linkId : linkId == "null" ? null : linkId || userInfo.linkId,
+                    linkToken : linkToken == "null" ? null : linkToken || userInfo.linkToken,
                 })
             }).catch((err) => {
                 // 유효성 검사에 따른 응답
@@ -163,4 +166,30 @@ module.exports = class UserController {
             res.status(500).json({ message: "Internal Server Error" });
         })
     }
+
+    static async linkUser(req, res){
+         const result = await axios.post(
+                "https://github.com/login/oauth/access_token",{
+                client_id : process.env.GITHUB_CLIENT_ID,
+                client_secret : process.env.GITHUB_CLIENT_SECRET,
+                code : req.query.code
+            }).catch((err) => {
+                console.log(err)
+                res.status(500).json({ message: "Internal Server Error" })
+            });
+        
+        const token = result.data.split('&')[0].split('=')[1];
+
+        const { data } = await axios.get('https://api.github.com/user', {
+                    headers: {
+                      Authorization: `token ${token}`,
+                    },
+                }).catch((err) => {
+                    console.log(err)
+                    res.status(500).json({ message: "Internal Server Error" })
+                });
+       
+        res.status(200).json({ linkToken : token, linkId : data.id })
+    }
+    
 }

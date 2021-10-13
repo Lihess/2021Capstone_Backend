@@ -10,12 +10,6 @@ const BookmarkController = require('../controllers/bookmarkRecipeController');
 
 const { authJWT, authUser} = require('../middlewares/auth');
 
-// CRUD
-router.post('/', UserController.createUser);
-router.get('/:userNum', UserController.readUser)
-router.put('/', UserController.updateUser)
-router.delete('/:userNum', UserController.deleteUser)
-
 // Login 관련
 router.post('/login', UserController.login)
 router.get('/logout/:id', UserController.logout)
@@ -27,5 +21,12 @@ router.get('/:ordererNum/orders', OrderController.readOrdersByUser)
 router.get('/:userNum/imn-ingr-recipes', ImnIngrRecipeController.readIIRsByUser)
 router.get('/:userNum/imn-ingrs', ImnIngrRecipeController.readImnIngrsByUser)
 router.get('/:userNum/bookmarks', BookmarkController.readBookmarksByUser)
+router.get('/link', UserController.linkUser)
+
+// CRUD
+router.post('/', UserController.createUser);
+router.get('/:userNum', UserController.readUser)
+router.put('/', UserController.updateUser)
+router.delete('/:userNum', UserController.deleteUser)
 
 module.exports = router;
