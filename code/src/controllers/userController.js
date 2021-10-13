@@ -3,10 +3,10 @@
 const User = require('../models/user')
 const jwt = require('../utils/jwt')
 const axios = require('axios');
-const { Op, Sequelize } = require("sequelize");
+const { Op, Sequelize, where } = require("sequelize");
 const { nowDate } = require('../utils/date');
 var crypto = require('crypto');
-
+const mailSender = require('../utils/mail');
 
 module.exports = class UserController {
     static async createUser(req, res){
@@ -167,6 +167,96 @@ module.exports = class UserController {
         })
     }
 
+    static async findId(req, res){
+        const { email } = req.body
+
+        const userInfo = await User.findOne({ where : { email : email }})
+
+        if(userInfo){
+            const html = `
+                <center>
+                    <div style="padding: 10px; width: 500px;">
+                        <div style="width : 100%; text-align: left;" >
+                            <h2 style="border-bottom : 2px solid #7cc9d1;"> 아이디 안내 </h2>
+                            <p>안녕하세요, Better Before 입니다.</p></br>
+                            <p>요청하신 아이디 정보를 보내드립니다.</p>
+                        </div>
+                        <div style=" margin-top: 40px; background-color:#F0F6F5; border: 1px solid #b5d9d8; height: 50px; width: 400px; display: flex; flex-direction: column; justify-content: center;">
+                            <p style="text-align: center; color: black;"> 아이디는 <b>${userInfo.id}</b>입니다.</p>
+                        </div>
+                        <div  style="margin-top: 40px; width : 100%; height: 50px;background-color:#f5f5f7;display: flex;flex-direction: column;justify-content: center;" >
+                            <p style="text-align: center; color: #7c7c86"> 
+                                본 이메일은 Better-Before에서 발송된 메일입니다. 
+                            </p>
+                        </div>
+                    </div>
+                </center>`
+
+            mailSender.sendMail(email, "[Better Before] 귀하의 새로운 비밀번호를 알려드립니다.", html)
+                .then((result) => {
+                    res.status(200).json()
+                }).catch((err) => {
+                    res.status(500).json({ message: "Mail Send fail" });
+                })
+        } else {
+            res.status(400).json("Bad request")
+        }
+    }
+
+    // 패스워드 찾기 : 패스워드 재설정 후 메일 전송
+    static async findPwd(req, res){
+        const { email, id } = req.body
+        
+        const userInfo = await User.findOne({ where : { email : email, id : id }})
+
+        if(userInfo){
+            //  Math.random().toString(36) 시, 난수로 소수점이 붙어서 나옴옴
+            const newPwd = Math.random().toString(36).slice(2);
+
+            const html = `
+                <center>
+                    <div style="padding: 10px; width: 500px;">
+                        <div style="width : 100%; text-align: left;" >
+                            <h2 style="border-bottom : 2px solid #7cc9d1;"> 비밀번호 재설정 </h2>
+                            <p>안녕하세요, Better Before 입니다.</p>
+                            <p>재설정된 비밀번호를 알려드립니다.</p>
+                            <p>해당 비밀번호로 로그인 후, <b>반드시 비밀번호를 변경해주세요.</b></p>
+                        </div>
+                        <div style=" margin-top: 40px; background-color:#F0F6F5; border: 1px solid #b5d9d8; height: 50px; width: 400px; display: flex; flex-direction: column; justify-content: center;">
+                            <p style="text-align: center; color: black;"> 새로운운 비밀번호는 <b>${newPwd}</b>입니다.</p>
+                        </div>
+                        <div  style="margin-top: 40px; width : 100%; height: 50px;background-color:#f5f5f7;display: flex;flex-direction: column;justify-content: center;" >
+                            <p style="text-align: center; color: #7c7c86"> 
+                                본 이메일은 Better-Before에서 발송된 메일입니다. 
+                            </p>
+                        </div>
+                    </div>
+                </center>`
+            const salt = Math.round((new Date().valueOf() * Math.random())) + "";
+            const hashPassword = crypto.createHash("sha512").update(newPwd + salt).digest("hex");
+
+            // 새로 설정된 비밀번호로 변경
+            User.update({
+                    pwd : hashPassword, 
+                    salt : salt
+                }, {where : { email : email, id : id }})
+                .then(() => {
+                    mailSender.sendMail(email, "[Better Before] 귀하의 아이디를 알려드립니다.", html)
+                    .then((result) => {
+                            res.status(200).json()
+                        }).catch((err) => {
+                            res.status(500).json({ message: "Mail Send fail" });
+                        })
+                }).catch((err) => {
+                    res.status(500).json({ message: "Internal Server Error" });
+                })
+        } else {
+            res.status(400).json("Bad request")
+        }
+    }
+
+    // 쇼핑몰 연동
+    // 느낌만 주기위해서 OAuth 사용
     static async linkUser(req, res){
          const result = await axios.post(
                 "https://github.com/login/oauth/access_token",{
@@ -191,5 +281,4 @@ module.exports = class UserController {
        
         res.status(200).json({ linkToken : token, linkId : data.id })
     }
-    
 }

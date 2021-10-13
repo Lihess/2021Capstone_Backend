@@ -13,6 +13,8 @@ const { authJWT, authUser} = require('../middlewares/auth');
 // Login 관련
 router.post('/login', UserController.login)
 router.get('/logout/:id', UserController.logout)
+router.post('/find-id', UserController.findId)
+router.post('/find-pwd', UserController.findPwd)
 
 // API
 router.get('/:ownerNum/refs', RefController.readRefsByUser)
