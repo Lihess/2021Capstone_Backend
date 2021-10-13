@@ -1,4 +1,5 @@
 const express = require('express')
+const cors = require('cors');
 
 const app = express()
 
@@ -15,6 +16,10 @@ models.sequelize.sync().then( () => {
   console.log("...DB Link fail");
   console.log(err);
 })
+
+// cors 방지용
+// 추후 도메인을 지정하도록 수정할 수도 있음
+app.use(cors())
 
 // req의 body를 받기위해
 app.use(express.json());
