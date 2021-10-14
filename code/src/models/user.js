@@ -31,7 +31,8 @@ module.exports = class User extends Sequelize.Model {
                 validate: {
                   isEmail: true,
                 },
-                allowNull: false
+                allowNull: false,
+                unique: true
             },
             linkId :{
                 type : Sequelize.STRING(30),

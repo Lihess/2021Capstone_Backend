@@ -39,7 +39,8 @@ module.exports = class UserController {
         }).catch((err) => {
             // 유효성 검사에 따른 응답
             err.name ==  "SequelizeUniqueConstraintError" ?
-                res.status(400).json({message : "ID is not uniqe"}) : res.status(500).json({ message: "Internal Server Error" });
+                res.status(400).json({message : `${err.errors[0].path.toUpperCase().split('_')[0]} is not uniqe`}) 
+                : res.status(500).json({ message: "Internal Server Error" });
         })
     }
 
@@ -98,7 +99,8 @@ module.exports = class UserController {
             }).catch((err) => {
                 // 유효성 검사에 따른 응답
                 err.name ==  "SequelizeUniqueConstraintError" ?
-                res.status(400).json({message : "ID is not uniqe"}) : res.status(500).json({ message: "Internal Server Error" });
+                    res.status(400).json({message : `${err.errors[0].path.toUpperCase().split('_')[0]} is not uniqe`}) 
+                    : res.status(500).json({ message: "Internal Server Error" });
             })
         }
     }
@@ -192,14 +194,14 @@ module.exports = class UserController {
                     </div>
                 </center>`
 
-            mailSender.sendMail(email, "[Better Before] 귀하의 새로운 비밀번호를 알려드립니다.", html)
+            mailSender.sendMail(email, "[Better Before] 귀하의 아이디를 알려드립니다.", html)
                 .then((result) => {
                     res.status(200).json()
                 }).catch((err) => {
-                    res.status(500).json({ message: "Mail Send fail" });
+                    res.status(500).json({ message: "Mail send fail" });
                 })
         } else {
-            res.status(400).json("Bad request")
+            res.status(400).json("Not match")
         }
     }
 
@@ -210,7 +212,7 @@ module.exports = class UserController {
         const userInfo = await User.findOne({ where : { email : email, id : id }})
 
         if(userInfo){
-            //  Math.random().toString(36) 시, 난수로 소수점이 붙어서 나옴옴
+            //  Math.random().toString(36) 시, 난수로 소수점이 붙어서 나옴
             const newPwd = Math.random().toString(36).slice(2);
 
             const html = `
@@ -241,17 +243,17 @@ module.exports = class UserController {
                     salt : salt
                 }, {where : { email : email, id : id }})
                 .then(() => {
-                    mailSender.sendMail(email, "[Better Before] 귀하의 아이디를 알려드립니다.", html)
+                    mailSender.sendMail(email, "[Better Before] 귀하의 새로운 비밀번호를 알려드립니다.", html)
                     .then((result) => {
                             res.status(200).json()
                         }).catch((err) => {
-                            res.status(500).json({ message: "Mail Send fail" });
+                            res.status(500).json({ message: "Mail send fail" });
                         })
                 }).catch((err) => {
                     res.status(500).json({ message: "Internal Server Error" });
                 })
         } else {
-            res.status(400).json("Bad request")
+            res.status(400).json("Not match")
         }
     }
 
