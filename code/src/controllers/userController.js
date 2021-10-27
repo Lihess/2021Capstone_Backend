@@ -132,6 +132,8 @@ module.exports = class UserController {
         const userInfo = await User.findOne({where : { id : id }}) 
         let hashPassword = crypto.createHash("sha512").update(pwd + userInfo.salt).digest("hex");
 
+        console.log(userInfo.userNum)
+
         if (hashPassword === userInfo.pwd) {
             const accessToken = jwt.accessToken(userInfo);
             const refreshToken = jwt.refreshToken();
@@ -143,6 +145,7 @@ module.exports = class UserController {
                     where : {id : id} 
                 }).then((result) => {
                     res.status(200).json({ 
+                        userNum : userInfo.userNum,
                         accessToken : accessToken,
                         refreshToken : refreshToken
                     })
