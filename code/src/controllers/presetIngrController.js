@@ -100,7 +100,9 @@ module.exports = class PresetIngrController {
 
 	// search API
 	static async searchPresetIngrs(req, res){
-		const {type, keyword} = req.query
+		const { type, keyword, page } = req.query
+		// 시작 페이지 : 1, 페이지 당 갯수 : 20 
+        const offset = (page == null) ? 0 : (page - 1) * 20
 		var list = null
 
 		// type, keyword 모두 입력으로 들어온 경우
@@ -112,7 +114,9 @@ module.exports = class PresetIngrController {
 												WHEN preset_ingr_name like '${keyword}%' THEN 2 
 												WHEN preset_ingr_name like '%${keyword}%' THEN 3
 												ELSE 4 END`), ['presetIngrNum', 'ASC']],
-					attributes: {exclude: ['createdAt', 'updatedAt', 'deletedAt']}
+					attributes: {exclude: ['createdAt', 'updatedAt', 'deletedAt']},
+					offset : offset, 
+					limit : 20
 				}).catch((err) => {console.log(err)
 					res.status(500).json({ message : "Internal  Server Error "});
 			  	})
@@ -126,7 +130,9 @@ module.exports = class PresetIngrController {
 												WHEN preset_ingr_name like '${keyword}%' THEN 2 
 												WHEN preset_ingr_name like '%${keyword}%' THEN 3
 												ELSE 4 END`), ['presetIngrNum', 'ASC']],
-					attributes: {exclude: ['createdAt', 'updatedAt', 'deletedAt']}
+					attributes: {exclude: ['createdAt', 'updatedAt', 'deletedAt']},
+					offset : offset, 
+					limit : 20
 				}).catch((err) => {
 					res.status(500).json({ message : "Internal  Server Error "});
 			  	})
@@ -136,7 +142,22 @@ module.exports = class PresetIngrController {
 			list = await PresetIngr.findAll({
 				where : { ingrType : type },
 				order : [['presetIngrNum', 'ASC']],
-				attributes: {exclude: ['createdAt', 'updatedAt', 'deletedAt']}
+				attributes: {exclude: ['createdAt', 'updatedAt', 'deletedAt']},
+				offset : offset, 
+				limit : 20
+			}).catch((err) => {
+				res.status(500).json({ message : "Internal  Server Error "});
+		  	})
+		}
+		// 아무것도 전달되지 않은 경우
+		else {
+			list = await PresetIngr.findAll({
+				order : [
+					[Sequelize.fn('FIELD', Sequelize.col('ingr_type'), 'v', 'f', 'm', 'a', 's', 'c', 'd', 'g', 'b','e')], 
+					['presetIngrNum', 'ASC']],
+				attributes: {exclude: ['createdAt', 'updatedAt', 'deletedAt']},
+				offset : offset, 
+				limit : 20
 			}).catch((err) => {
 				res.status(500).json({ message : "Internal  Server Error "});
 		  	})

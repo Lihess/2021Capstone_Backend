@@ -82,7 +82,7 @@ module.exports = class RecipeController {
 
     static async deleteRecipe(req, res){
         const { recipeNum } = req.params;
-
+        
         const recipeInfo = await Recipe.findByPk(recipeNum)
 
         if(!recipeInfo){
@@ -99,25 +99,38 @@ module.exports = class RecipeController {
     }
 
     static async searchRecipes(req, res){
-        const { keyword } = req.query
-
-        // 정확도순으로 정렬하기 위해서
-        // Heroku에서 rank 함수를 지원하지 않아 case문으로
-        const query = `
-            SELECT distinct recipe.recipe_num, recipe.title, recipe.pic_path
-            FROM recipe, recipe_ingr
-            where (recipe.title like '%${keyword}%') 
-                OR (recipe.recipe_num=recipe_ingr.recipe_num AND recipe_ingr.ingr_name like '%${keyword}%')
-            order by case
-                when recipe.title='${keyword}' AND recipe_ingr.ingr_name like '%${keyword}%' then 1
-                when recipe.title like '${keyword}%'  AND recipe_ingr.ingr_name like '%${keyword}%' then 2
-                when recipe.title like '%${keyword}%' AND recipe_ingr.ingr_name like '%${keyword}%' then 3
-                when recipe.title like '${keyword}' then 4
-                when recipe.title like '${keyword}%' then 5
-                when recipe.title like '%${keyword}%' then 6
-                when recipe_ingr.ingr_name='${keyword}' then 7
-                else 8 end, recipe.recipe_num 
-        `
+        const { keyword, page } = req.query
+        // 시작 페이지 : 1, 페이지 당 갯수 : 20 
+        const offset = (page == null) ? 0 : (page - 1) * 20
+        let query  = null
+        
+        if(!keyword){
+            query = `
+                SELECT distinct recipe_num, title, pic_path
+                FROM recipe
+                order by recipe_num 
+                limit ${offset}, 20`
+        }
+        else {
+            // 정확도순으로 정렬하기 위해서
+            // Heroku에서 rank 함수를 지원하지 않아 case문으로
+            query = `
+                SELECT distinct recipe.recipe_num, recipe.title, recipe.pic_path
+                FROM recipe, recipe_ingr
+                where (recipe.title like '%${keyword}%') 
+                    OR (recipe.recipe_num=recipe_ingr.recipe_num AND recipe_ingr.ingr_name like '%${keyword}%')
+                order by case
+                    when recipe.title='${keyword}' AND recipe_ingr.ingr_name like '%${keyword}%' then 1
+                    when recipe.title like '${keyword}%'  AND recipe_ingr.ingr_name like '%${keyword}%' then 2
+                    when recipe.title like '%${keyword}%' AND recipe_ingr.ingr_name like '%${keyword}%' then 3
+                    when recipe.title like '${keyword}' then 4
+                    when recipe.title like '${keyword}%' then 5
+                    when recipe.title like '%${keyword}%' then 6
+                    when recipe_ingr.ingr_name='${keyword}' then 7
+                    else 8 end, recipe.recipe_num 
+                limit ${offset}, 20`
+        } 
+        
         sequelize.query(query, { type : Sequelize.QueryTypes.SELECT })
                 .then((result) => { res.status(200).json(result) })
                 .catch((err) => {
