@@ -284,6 +284,6 @@ module.exports = class UserController {
                     res.status(500).json({ message: "Internal Server Error" })
                 });
        
-        res.status(200).json({ linkToken : token, linkId : data.id })
+        res.status(301).json({ linkToken : token, linkId : data.id })
     }
 }
