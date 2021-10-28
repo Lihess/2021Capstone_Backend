@@ -49,7 +49,7 @@ module.exports = class UserController {
 
         User.findByPk(
             // 비밀번호는 보안상의 문제로 제외.
-            userNum, {attributes: {exclude: [ 'pwd', 'salt', 'refreshToken', 'linkToken','createdAt', 'updatedAt', 'deletedAt']}}
+            userNum, {attributes: {exclude: [ 'pwd', 'salt', 'refreshToken', 'createdAt', 'updatedAt', 'deletedAt']}}
         ).then((result) => {
             result == null 
                 ? res.status(404).json({ message: "Not Found" }) : res.status(200).json(result)
@@ -131,8 +131,6 @@ module.exports = class UserController {
         
         const userInfo = await User.findOne({where : { id : id }}) 
         let hashPassword = crypto.createHash("sha512").update(pwd + userInfo.salt).digest("hex");
-
-        console.log(userInfo.userNum)
 
         if (hashPassword === userInfo.pwd) {
             const accessToken = jwt.accessToken(userInfo);
