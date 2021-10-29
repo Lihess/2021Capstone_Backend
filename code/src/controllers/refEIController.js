@@ -1,6 +1,7 @@
 // 21.09.25 이은비
 // RefEnrollIngr에 대한 데이터 처리부분
-const { Sequelize } = require('../models');
+const { sequelize, ImnIngrRecipe } = require('../models');
+const Sequelize = require('sequelize')
 const RefEI = require('../models/refEnrollIngr');
 
 module.exports = class RefEIController {
@@ -54,12 +55,12 @@ module.exports = class RefEIController {
         const {refNum, ingrOrnu, ingrName, expyDate, quantity, storageMthdType, presetIngrNum} = req.body
 
         const refEIInfo = await RefEI.findOne({where : {refNum : refNum, ingrOrnu : ingrOrnu}})
-        
+        console.log(refEIInfo.ingrName)
         if(!refEIInfo){
             res.status(404).json({ message: "Not Found" })
         } else {
             RefEI.update({
-                ingrName : ingrName || refEIInfo.IngrName, 
+                ingrName : ingrName || refEIInfo.ingrName, 
                 expyDate : expyDate || refEIInfo.expyDate, 
                 quantity : quantity || refEIInfo.quantity, 
                 storageMthdType : storageMthdType || refEIInfo.storageMthdType, 
@@ -72,7 +73,7 @@ module.exports = class RefEIController {
                 res.status(200).json({
                     refNum : refNum,
                     ingrOrnu : ingrOrnu,
-                    ingrName : ingrName || refEIInfo.IngrName, 
+                    ingrName : ingrName || refEIInfo.ingrName, 
                     enrollDate : refEIInfo.enrollDate,
                     expyDate : expyDate || refEIInfo.expyDate, 
                     quantity : quantity || refEIInfo.quantity, 
@@ -85,6 +86,9 @@ module.exports = class RefEIController {
                 else res.status(500).json({ message: "Internal Server Error" });
             })
         }
+
+        //const updateName = ingrName ? ingrName : refEIInfo.IngrName
+        expyDate ? afterUpdateExpy(expyDate, refNum, ingrOrnu, ingrName || refEIInfo.ingrName) : null
     }
 
     static async deleteRefEI(req, res) {
@@ -120,5 +124,37 @@ module.exports = class RefEIController {
                 res.status(404).json({ message: "Ref Not Found" })
             else res.status(500).json({ message: "Internal Server Error" });
         })
+    }
+}
+
+// 등록 식자재의 수정 후 삭제제
+const afterUpdateExpy = (expyDate, refNum, ingrOrnu, ingrName) => {
+    const toDate = Date.parse(new Date().toLocaleDateString('ko-KR'))
+    const dateDiff = (new Date(expyDate) - toDate) / (1000*60*60*24) 
+    
+    // 날짜 차이가 3일 초과인 경우
+    // 해당 식자재와 관련된 임박 식자재 레시피 삭제
+    if(dateDiff > 3) {
+        ImnIngrRecipe.destroy({
+            where : {refNum : refNum, ingrOrnu : ingrOrnu}
+        })
+    } 
+    // 날짜 차이가 3일 이하인 경우
+    // 해당 식자재와 관련된 임박 식자재 레시피 등록록
+    else {
+        const query = `
+            select @rowNum := @rowNum+1 as recipeOrnu, y.ref_num as refNum, 
+                    y.ingr_ornu as ingrOrnu, x.recipe_num as recipeNum 
+            from recipe_ingr as x, ref_enroll_ingr as y, (SELECT @rowNum:=0) R
+            where x.ingr_name = '${ingrName}';
+        `
+
+        sequelize.query(query, { type : Sequelize.QueryTypes.SELECT }) // type : 중복 방식을 위해서
+            .then((list) => {
+                // IIR 대량 생성
+                ImnIngrRecipe.bulkCreate(list)
+                    .then((result) => { console.log( result.length, "IIR Bluk Create Success ") })
+                    .catch((err) => { console.log("error : ", err) })
+            }).catch((err) => {  console.log("error : ", err) })
     }
 }
