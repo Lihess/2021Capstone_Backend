@@ -17,7 +17,7 @@ module.exports = class RecipeIngr extends Sequelize.Model {
                 allowNull : false
             },
             quantity : {
-                type : Sequelize.DECIMAL(5, 2),
+                type : Sequelize.STRING(10),
                 allowNull : false
             }
         },{
