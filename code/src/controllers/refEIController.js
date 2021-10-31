@@ -20,7 +20,7 @@ module.exports = class RefEIController {
             res.status(200).json({
                 refNum : result.refNum, 
                 ingrOrnu : result.ingrOrnu,
-                ingrName : result.IngrName, 
+                ingrName : result.ingrName, 
                 enrollDate : result.enrollDate,
                 expyDate : result.expyDate, 
                 quantity : result.quantity, 
@@ -35,6 +35,8 @@ module.exports = class RefEIController {
                 res.status(404).json({ message: "Ref or PresetIngr Not Found" })
             else res.status(500).json({ message: "Internal Server Error" });
         })
+
+        afterExpyInput('create', expyDate, refNum, lastOrnu + 1, ingrName)
     }
 
     static async readRefEI(req, res) {
@@ -88,7 +90,7 @@ module.exports = class RefEIController {
         }
 
         //const updateName = ingrName ? ingrName : refEIInfo.IngrName
-        expyDate ? afterUpdateExpy(expyDate, refNum, ingrOrnu, ingrName || refEIInfo.ingrName) : null
+        expyDate ? afterUpdateExpy('update', expyDate, refNum, ingrOrnu, ingrName || refEIInfo.ingrName) : null
     }
 
     static async deleteRefEI(req, res) {
@@ -128,25 +130,27 @@ module.exports = class RefEIController {
 }
 
 // 등록 식자재의 수정 후 삭제제
-const afterUpdateExpy = (expyDate, refNum, ingrOrnu, ingrName) => {
+const afterExpyInput = (mthd, expyDate, refNum, ingrOrnu, ingrName) => {
+    console.log(mthd, expyDate, refNum, ingrOrnu, ingrName)
     const toDate = Date.parse(new Date().toLocaleDateString('ko-KR'))
     const dateDiff = (new Date(expyDate) - toDate) / (1000*60*60*24) 
     
-    // 날짜 차이가 3일 초과인 경우
+    // 날짜 차이가 3일 초과인 경우, update
     // 해당 식자재와 관련된 임박 식자재 레시피 삭제
-    if(dateDiff > 3) {
+    if((mthd == 'update') && (dateDiff > 3)) {
         ImnIngrRecipe.destroy({
             where : {refNum : refNum, ingrOrnu : ingrOrnu}
         })
     } 
     // 날짜 차이가 3일 이하인 경우
-    // 해당 식자재와 관련된 임박 식자재 레시피 등록록
-    else {
+    // 해당 식자재와 관련된 임박 식자재 레시피 등록
+    else if(dateDiff <= 3) {
         const query = `
-            select @rowNum := @rowNum+1 as recipeOrnu, y.ref_num as refNum, 
-                    y.ingr_ornu as ingrOrnu, x.recipe_num as recipeNum 
+            select @rowNum := @rowNum+1 as recipeOrnu, ${refNum} as refNum, 
+                    ${ingrOrnu} as ingrOrnu, x.recipe_num as recipeNum 
             from recipe_ingr as x, ref_enroll_ingr as y, (SELECT @rowNum:=0) R
-            where x.ingr_name = '${ingrName}';
+            where x.ingr_name = '${ingrName}'
+            group by x.recipe_num;
         `
 
         sequelize.query(query, { type : Sequelize.QueryTypes.SELECT }) // type : 중복 방식을 위해서
