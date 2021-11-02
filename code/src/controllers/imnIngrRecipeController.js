@@ -38,8 +38,8 @@ module.exports = class ImnIngrRecipeController {
         IIR.findOne({
                 where : {  refNum : refNum, ingrOrnu : ingrOrnu, recipeOrnu : recipeOrnu },
                 include: [
-                    { model : Recipe, attributes: {exclude: [ 'createdAt', 'updatedAt', 'deletedAt']}},
-                    { model : RefEnrollIngr, attributes: {exclude: [ 'refNum', 'ingrOrnu', 'createdAt', 'updatedAt', 'deletedAt']}}
+                    { model : Recipe, attributes: {exclude: [ 'createdAt', 'updatedAt', 'deletedAt']}, as : "recipe"},
+                    { model : RefEnrollIngr, attributes: {exclude: [ 'refNum', 'ingrOrnu', 'createdAt', 'updatedAt', 'deletedAt']}, as : "refEnrollIngr"}
                 ], 
                 attributes: {exclude: [ 'recipeNum','createdAt', 'updatedAt', 'deletedAt']}
             }
@@ -129,7 +129,7 @@ module.exports = class ImnIngrRecipeController {
                 refNum : [sequelize.literal(`SELECT ref_num FROM ref WHERE owner_num=${userNum}`)]
             },
             order : [['refNum', 'ASC'], ['ingrOrnu', 'ASC']],
-            include: [{ model : RefEnrollIngr, attributes: {exclude: [ 'createdAt', 'updatedAt', 'deletedAt']}}],
+            include: [{ model : RefEnrollIngr, attributes: {exclude: [ 'createdAt', 'updatedAt', 'deletedAt']}, as : 'refEnrollIngr'}],
             attributes: {exclude: ['recipeNum','createdAt', 'updatedAt', 'deletedAt']},
             // 그룹화를 통해 동일한 식자재는 한번만 호출되도록.
             group : ['refNum', 'ingrOrnu']
