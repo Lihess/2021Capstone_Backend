@@ -8,7 +8,7 @@ const createIIRS = () => {
     // rowNum을 이용하여 recipeOrnu를 일정하게 부여
     // @GROUPING:=ingrOrnu*refNum : 겹치지지 않기 위해서 곱셉으로 정의
     const query = `
-        SELECT (CASE @GROUPING WHEN ingrOrn*refNum THEN @RANK := @RANK + 1 ELSE @RANK := 1 END) AS recipeOrnu, (@GROUPING:=ingrOrnu*refNum),
+        SELECT (CASE @GROUPING WHEN ingrOrnu*refNum THEN @RANK := @RANK + 1 ELSE @RANK := 1 END) AS recipeOrnu, (@GROUPING:=ingrOrnu*refNum),
         refNum, ingrOrnu, recipeNum
         FROM (select x.recipe_num as recipeNum, y.ingr_ornu as ingrOrnu,  y.ref_num as refNum
 	        from recipe_ingr as x, ref_enroll_ingr as y
