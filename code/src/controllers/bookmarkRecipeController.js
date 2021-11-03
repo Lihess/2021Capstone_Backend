@@ -103,9 +103,7 @@ module.exports = class BookmarkController {
             include: [{model : Recipe, attributes: {exclude: [ 'createdAt', 'updatedAt', 'deletedAt']}, as : 'recipe'}], 
             attributes: {exclude: [ 'recipeNum', 'createdAt', 'updatedAt', 'deletedAt']}
         }).then((result) => {
-            console.log(result)
-            result == null 
-                ? res.status(404).json({ message: "Not Found" }) : res.status(200).json(result)
+            res.status(200).json(result)
         }).catch((err) => {
             console.log(err)
             res.status(500).json({ message: "Internal Server Error" });
