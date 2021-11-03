@@ -53,6 +53,7 @@ module.exports = class Recipe extends Sequelize.Model {
             sourceKey : 'recipeNum'
         });
         this.hasMany(db.RecipeIngr, {
+            as : 'recipeIngrs',
             foreignKey : {
                 name : 'recipeNum',
                 primaryKey : true,
@@ -61,6 +62,7 @@ module.exports = class Recipe extends Sequelize.Model {
             sourceKey : 'recipeNum'
         });
         this.hasMany(db.RecipeProc, {
+            as : 'recipeProcs',
             foreignKey : {
                 name : 'recipeNum',
                 primaryKey : true,

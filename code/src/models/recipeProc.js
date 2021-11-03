@@ -36,6 +36,7 @@ module.exports = class RecipeProc extends Sequelize.Model {
     // 관계 정의
     static associate(db) {
         this.belongsTo(db.Recipe, {
+            as : 'recipeProcs',
             foreignKey : {
                 name : 'recipeNum',
                 primaryKey : true,

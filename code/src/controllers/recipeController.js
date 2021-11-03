@@ -1,5 +1,5 @@
 const Recipe = require('../models/recipe')
-const { sequelize } = require('../models')
+const { sequelize, RecipeIngr, RecipeProc } = require('../models')
 const { Op, Sequelize } = require("sequelize");
 const { nowDate } = require('../utils/date');
 
@@ -39,11 +39,18 @@ module.exports = class RecipeController {
         const {recipeNum} = req.params;
 
         Recipe.findByPk(
-            recipeNum, {attributes: {exclude: ['createdAt', 'updatedAt', 'deletedAt']}}
+            recipeNum, {
+                include : [
+                    { model : RecipeIngr, order : [['ingrOrnu', 'ASC']], attributes: {exclude: [ 'recipeNum','createdAt', 'updatedAt', 'deletedAt']}, as : 'recipeIngrs' },
+                    { model : RecipeProc, order : [['procOrnu', 'ASC']], attributes: {exclude: [ 'recipeNum','createdAt', 'updatedAt', 'deletedAt']}, as : 'recipeProcs' }
+                ],
+                attributes: {exclude: ['createdAt', 'updatedAt', 'deletedAt']}
+            }
         ).then((result) => {
             result == null
                 ? res.status(404).json({ message: "Not Found"}) : res.status(200).json(result)
         }).catch((err) => {
+            console.log(err)
             res.status(500).json({message: "Internal Server Error"});
         })
     }
