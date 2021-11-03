@@ -45,8 +45,7 @@ module.exports = class OrderController {
                 attributes: {exclude: [ 'createdAt', 'updatedAt', 'deletedAt']}
             }
         ).then((result) => {
-            result == null 
-                ? res.status(404).json({ message: "Not Found" }) : res.status(200).json(result)
+            res.status(200).json(result)
         }).catch((err) => {
             console.log(err)
             res.status(500).json({ message: "Internal Server Error" });
@@ -108,8 +107,7 @@ module.exports = class OrderController {
             include: [{model : OrderProduct, attributes: {exclude: [ 'orderNum','createdAt', 'updatedAt', 'deletedAt']}, as : 'orderProducts'}], 
             attributes: {exclude: [ 'createdAt', 'updatedAt', 'deletedAt']}
         }).then((result) => {
-            result == null 
-                ? res.status(404).json({ message: "Not Found" }) : res.status(200).json(result)
+            res.status(200).json(result)
         }).catch((err) => {
             console.log(err)
             res.status(500).json({ message: "Internal Server Error" });
@@ -120,13 +118,13 @@ module.exports = class OrderController {
 
 // 쇼핑몰에서 사용자의 최근 주문 정보 불러오기&저장
 const createOrderList = async(ordererNum) => {
-    const { linkToken } = await User.findByPk(ordererNum)
+    const userInfo = await User.findByPk(ordererNum)
 
-    if(linkToken) {
+    if(userInfo && userInfo.linkToken) {
         const list = await axios.get("https://dummy-shopping-mall.herokuapp.com/api/order",{
             headers : {
                 "Content-Type": "application/json",
-                "Authorization" : `Bearer ${linkToken}`
+                "Authorization" : `Bearer ${userInfo.linkToken}`
             }
         }).catch((err) => {console.log(err)});
     
@@ -148,7 +146,7 @@ const createOrderList = async(ordererNum) => {
             })
     
             // 주문 정보 저장
-            Order.create({ orderNum, orderDate : list.data.orderDate, ordererNum}).catch((err) => {console.log(err)});
+            await Order.create({ orderNum, orderDate : list.data.orderDate, ordererNum}).catch((err) => {console.log(err)});
             OrderProduct.bulkCreate(orderProduct).catch((err) => {console.log(err)});
         } 
     }
