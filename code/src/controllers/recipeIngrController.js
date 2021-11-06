@@ -5,8 +5,8 @@ const RecipeIngr = require('../models/recipeIngr')
 
 module.exports = class RecipeIngrController {
     static async createRecipeIngr(req, res){
-        const { recipeNum, ingrName, quantity } = req.body;
-        //console.log(recipeNum, ingrName, quantity)
+        const { recipeNum, ingrName, quantityUnit } = req.body;
+        //console.log(recipeNum, ingrName, quantityUnit)
 
         const { lastOrnu } = await RecipeIngr.findOne({
                                     where : {recipeNum : recipeNum},
@@ -17,13 +17,13 @@ module.exports = class RecipeIngrController {
                                 })
         
         RecipeIngr.create({
-            recipeNum, ingrOrnu : lastOrnu + 1, ingrName, quantity
+            recipeNum, ingrOrnu : lastOrnu + 1, ingrName, quantityUnit
         }).then((result) => {
             res.status(200).json({
                 recipeNum : result.recipeNum, 
                 ingrOrnu : result.ingrOrnu,
                 ingrName : result.ingrName, 
-                quantity : result.quantity
+                quantityUnit : result.quantityUnit
             })
         }).catch((err) => {
             res.status(500).json({ message: "Internal Server Error" });
@@ -45,7 +45,7 @@ module.exports = class RecipeIngrController {
     }
 
     static async updateRecipeIngr(req, res) {
-        const { recipeNum, ingrOrnu, ingrName, quantity } = req.body;
+        const { recipeNum, ingrOrnu, ingrName, quantityUnit } = req.body;
         
         // 해당 recipeingr가 존재하는지 알기 위해.
         const ingrInfo = await RecipeIngr.findOne({where : { recipeNum : recipeNum, ingrOrnu : ingrOrnu }})
@@ -55,7 +55,7 @@ module.exports = class RecipeIngrController {
         } else {
             RecipeIngr.update({
                     ingrName : ingrName || ingrInfo.ingrName, 
-                    quantity : quantity || ingrInfo.quantity
+                    quantityUnit : quantityUnit || ingrInfo.quantityUnit
                 }, { 
                     where : { recipeNum : recipeNum, ingrOrnu : ingrOrnu }
                 }) .then((result) => {
@@ -64,7 +64,7 @@ module.exports = class RecipeIngrController {
                         recipeNum : recipeNum,
                         ingrOrnu : ingrOrnu,
                         ingrName : ingrName || ingrInfo.ingrName, 
-                        quantity : quantity || ingrInfo.quantity
+                        quantityUnit : quantityUnit || ingrInfo.quantityUnit
                     })
             }).catch((err) => {
                 res.status(500).json({ message: "Internal Server Error" });
