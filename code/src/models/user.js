@@ -19,7 +19,7 @@ module.exports = class User extends Sequelize.Model {
                 unique: true
             },
             pwd :{
-                type : Sequelize.STRING(150),
+                type : Sequelize.STRING(300),
                 allowNull: false,
             },
             nickname : {
@@ -35,11 +35,11 @@ module.exports = class User extends Sequelize.Model {
                 unique: true
             },
             linkId :{
-                type : Sequelize.STRING(30),
+                type : Sequelize.STRING(15),
                 allowNull: true
             },
             linkToken : {
-                type : Sequelize.STRING(200),
+                type : Sequelize.STRING(300),
                 allowNull: true
             },
             salt : { // 암호화된 비밀번호 일치여부를 알기 위해
@@ -47,7 +47,7 @@ module.exports = class User extends Sequelize.Model {
                 allowNull: false
             },
             refreshToken : {
-                type : Sequelize.STRING(200),
+                type : Sequelize.STRING(300),
                 allowNull: true
             }
         },{
