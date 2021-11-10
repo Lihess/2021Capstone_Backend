@@ -24,6 +24,4 @@ const createIIRS = () => {
             }).catch((err) => {  console.log("error : ", err) })
 }
 
-module.exports = createIIRS;
-
-//createIIRS();
+createIIRS();
