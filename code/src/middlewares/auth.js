@@ -17,11 +17,11 @@ const authJWT = async(req, res, next) => {
                         req.id = verify.id
                         next()
                     } else 
-                        res.status(401).json({ "message" :  "Unauthorized"})
+                        res.status(401).json({ message :  "Unauthorized"})
                 })
         }
         else { 
-            res.status(401).json({ "message" :  "Unauthorized"})
+            res.status(401).json({ message :  "Unauthorized"})
         }
     }
 }
@@ -37,7 +37,7 @@ const authUser = async(req, res, next) => {
     // GET, DELET, params가 여러개일 경우
     else if(req.userNum == req.query.userNum || req.userNum == req.query.ownerNum || req.userNum == req.query.odererNum) 
         next()
-    else res.status(401).json({ "message" :  "Unauthorized"})
+    else res.status(401).json({message :  "Unauthorized"})
 }
 
 

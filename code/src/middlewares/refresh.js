@@ -16,7 +16,7 @@ const refresh = async(req, res) => {
         
         // decode 내에 payload가 존재하지 않다면 권한 x
         if(!decode.userNum) {
-            res.status(401).json({ "message" :  "Unauthorized"})
+            res.status(401).json({ message :  "Unauthorized"})
         }
 
         const authRefresh = await verifyRefresh(refresh, decode.userNum)
@@ -24,7 +24,7 @@ const refresh = async(req, res) => {
         if(!authAccess.result && (authAccess.message === 'jwt expired')){
             // 1. 두 토큰이 모두 만료된 경우, 새로 로그인 필요
             if(!authRefresh.result)
-                res.status(401).json({ "message" :  "Unauthorized"})
+                res.status(401).json({ message :  "Unauthorized"})
             else {
                 // 2. refresh token은 만료되지 않은 경우 access token, refresh token 재발급
                 // 장기적인 로그인 유지를 위해 refresh도 재발급
