@@ -99,19 +99,23 @@ module.exports = class OrderController {
     static async readOrdersByUser(req, res){
         const { ordererNum } = req.params
        
-        await createOrderList(ordererNum)
+        const linkAuth = await createOrderList(ordererNum)
 
-        Order.findAll({
-            where : { ordererNum : ordererNum },
-            order : [['orderDate', 'DESC'], ['orderNum', 'DESC']],
-            include: [{model : OrderProduct, attributes: {exclude: [ 'orderNum','createdAt', 'updatedAt', 'deletedAt']}, as : 'orderProducts'}], 
-            attributes: {exclude: [ 'createdAt', 'updatedAt', 'deletedAt']}
-        }).then((result) => {
-            res.status(200).json(result)
-        }).catch((err) => {
-            console.log(err)
-            res.status(500).json({ message: "Internal Server Error" });
-        })
+        if(linkAuth){
+            Order.findAll({
+                where : { ordererNum : ordererNum },
+                order : [['orderDate', 'DESC'], ['orderNum', 'DESC']],
+                include: [{model : OrderProduct, attributes: {exclude: [ 'orderNum','createdAt', 'updatedAt', 'deletedAt']}, as : 'orderProducts'}], 
+                attributes: {exclude: [ 'createdAt', 'updatedAt', 'deletedAt']}
+            }).then((result) => {
+                res.status(200).json(result)
+            }).catch((err) => {
+                console.log(err)
+                res.status(500).json({ message: "Internal Server Error" });
+            })
+        } else res.status(401).json({ message : "Unauthorized"})
+
+        
     }
 }
 
@@ -149,5 +153,9 @@ const createOrderList = async(ordererNum) => {
             await Order.create({ orderNum, orderDate : list.data.orderDate, ordererNum}).catch((err) => {console.log(err)});
             OrderProduct.bulkCreate(orderProduct).catch((err) => {console.log(err)});
         } 
+
+        return true
     }
+    else
+        return false
 }
