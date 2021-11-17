@@ -130,44 +130,57 @@ module.exports = class UserController {
         const { id, pwd } = req.body
         
         const userInfo = await User.findOne({where : { id : id }}) 
-        let hashPassword = crypto.createHash("sha512").update(pwd + userInfo.salt).digest("hex");
+       
+        if(!userInfo){
+            res.status(404).json({ message: "Not Found" })
+        }
+        else {
+            let hashPassword = crypto.createHash("sha512").update(pwd + userInfo.salt).digest("hex");
 
-        if (hashPassword === userInfo.pwd) {
-            const accessToken = jwt.accessToken(userInfo);
-            const refreshToken = jwt.refreshToken();
-
-            // DB에 refresh token 저장.
-            User.update({
-                    refreshToken : refreshToken
-                }, { 
-                    where : {id : id} 
-                }).then((result) => {
-                    res.status(200).json({ 
-                        userNum : userInfo.userNum,
-                        accessToken : accessToken,
+            if (hashPassword === userInfo.pwd) {
+                const accessToken = jwt.accessToken(userInfo);
+                const refreshToken = jwt.refreshToken();
+    
+                // DB에 refresh token 저장.
+                User.update({
                         refreshToken : refreshToken
+                    }, { 
+                        where : {id : id} 
+                    }).then((result) => {
+                        res.status(200).json({ 
+                            userNum : userInfo.userNum,
+                            accessToken : accessToken,
+                            refreshToken : refreshToken
+                        })
+                    }).catch((err) => {
+                        console.log(err)
+                        res.status(500).json({ message: "Internal Server Error" });
                     })
-                }).catch((err) => {
-                    console.log(err)
-                    res.status(500).json({ message: "Internal Server Error" });
-                })
-        } else res.status(400).json({ message: "Not match" });
+            } else res.status(400).json({ message: "Not match" });
+        } 
     }
 
     // logout
     static async logout(req, res){
         const { id } = req.params;
 
-        User.update({
-                refreshToken : null
-            },{
-                where : { id : id }
-        }).then((result) => {
-            res.status(200).json()
-        }).catch((err) => {
-            console.log(err)
-            res.status(500).json({ message: "Internal Server Error" });
-        })
+        const userInfo = await User.findOne({where : { id : id }}) 
+       
+        if(!userInfo){
+            res.status(404).json({ message: "Not Found" })
+        }
+        else {
+            User.update({
+                    refreshToken : null
+                },{
+                    where : { id : id }
+            }).then((result) => {
+                res.status(200).json()
+            }).catch((err) => {
+                console.log(err)
+                res.status(500).json({ message: "Internal Server Error" });
+            })
+        }
     }
 
     static async findId(req, res){
