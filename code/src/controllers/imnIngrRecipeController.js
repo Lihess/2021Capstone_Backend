@@ -135,9 +135,8 @@ module.exports = class ImnIngrRecipeController {
             group : ['refNum', 'ingrOrnu']
         }).then((result) => {
             // 응답 데이터 형식을 맞추기 위해서.
-            const ingrList = { imnIngrs : result.map((result) => result.RefEnrollIngr) }
-            
-            res.status(200).json( ingrList)
+            const ingrList = { imnIngrs : result.map((r) => r.refEnrollIngr) }
+            res.status(200).json(ingrList)
         }).catch((err) => {
             res.status(500).json({ message: "Internal Server Error" });
         })
