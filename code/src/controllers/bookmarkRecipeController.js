@@ -109,4 +109,19 @@ module.exports = class BookmarkController {
             res.status(500).json({ message: "Internal Server Error" });
         })
     }
+
+    static async readIsBookmark(req, res){
+        const { userNum, recipeNum } = req.query
+        
+        BookmarkRecipe.findOne({
+            where : { userNum : userNum, recipeNum : recipeNum },
+            attributes: {exclude: [ 'recipeNum', 'createdAt', 'updatedAt', 'deletedAt']}
+        }).then((result) => {
+            const is = result == null ? false : true;
+            res.status(200).json({ isBookmark : is })
+        }).catch((err) => {
+            console.log(err)
+            res.status(500).json({ message: "Internal Server Error" });
+        })
+    }
 }
