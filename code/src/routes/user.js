@@ -23,7 +23,7 @@ router.get('/:ordererNum/orders', OrderController.readOrdersByUser)
 router.get('/:userNum/imn-ingr-recipes', ImnIngrRecipeController.readIIRsByUser)
 router.get('/:userNum/imn-ingrs', ImnIngrRecipeController.readImnIngrsByUser)
 router.get('/:userNum/bookmarks', BookmarkController.readBookmarksByUser)
-router.get('/link', UserController.linkUser)
+router.get('/link/:userNum', UserController.linkUser)
 
 // CRUD
 router.post('/', UserController.createUser);

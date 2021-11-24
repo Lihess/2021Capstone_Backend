@@ -274,27 +274,39 @@ module.exports = class UserController {
     // 쇼핑몰 연동
     // 느낌만 주기위해서 OAuth 사용
     static async linkUser(req, res){
-         const result = await axios.post(
-                "https://github.com/login/oauth/access_token",{
-                client_id : process.env.GITHUB_CLIENT_ID,
-                client_secret : process.env.GITHUB_CLIENT_SECRET,
-                code : req.query.code
-            }).catch((err) => {
-                console.log(err)
-                res.status(500).json({ message: "Internal Server Error" })
-            });
-        
-        const token = result.data.split('&')[0].split('=')[1];
+        const { userNum } = req.params
 
-        const { data } = await axios.get('https://api.github.com/user', {
-                    headers: {
-                      Authorization: `token ${token}`,
-                    },
-                }).catch((err) => {
-                    console.log(err)
-                    res.status(500).json({ message: "Internal Server Error" })
-                });
-       
-        res.status(301).json({ linkToken : token, linkId : data.id })
+        User.update({
+            linkId : userNum,
+            linkToken : "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"
+        }, {where : { userNum : userNum }})
+        .then(() => {
+            res.status(200).json({ isLink : true })
+        }).catch((err) => {
+            res.status(500).json({ message: "Internal Server Error" });
+        })
+
+        //const result = await axios.post(
+        //        "https://github.com/login/oauth/access_token",{
+        //        client_id : process.env.GITHUB_CLIENT_ID,
+        //        client_secret : process.env.GITHUB_CLIENT_SECRET,
+        //        code : req.query.code
+        //    }).catch((err) => {
+        //        console.log(err)
+        //        res.status(500).json({ message: "Internal Server Error" })
+        //    });
+        //
+        //const token = result.data.split('&')[0].split('=')[1];
+        //
+        //const { data } = await axios.get('https://api.github.com/user', {
+        //            headers: {
+        //              Authorization: `token ${token}`,
+        //            },
+        //        }).catch((err) => {
+        //            console.log(err)
+        //            res.status(500).json({ message: "Internal Server Error" })
+        //        });
+        //
+        //res.status(301).json({ linkToken : token, linkId : data.id })
     }
 }
