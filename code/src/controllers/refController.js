@@ -43,8 +43,9 @@ module.exports = class RefController {
 
         Ref.findByPk(
             refNum,{
-                include: [{model : RefEnrollIngr, order : [['ingrOrnu', 'ASC']], attributes: {exclude: [ 'refNum','createdAt', 'updatedAt', 'deletedAt']}, as : 'enrollIngrs'}], 
-                attributes: {exclude: [ 'createdAt', 'updatedAt', 'deletedAt']}
+                include: [{model : RefEnrollIngr, attributes: {exclude: [ 'refNum','createdAt', 'updatedAt', 'deletedAt']}, as : 'enrollIngrs'}], 
+                attributes: {exclude: [ 'createdAt', 'updatedAt', 'deletedAt']},
+                order : [['enrollIngrs', 'expyDate', 'ASC']]
             }
         ).then((result) => {
             result == null 
@@ -115,8 +116,9 @@ module.exports = class RefController {
         Ref.findAll({
             where : { ownerNum : ownerNum },
             order : [['refNum', 'ASC']],
-            include: [{model : RefEnrollIngr, order : [['ingrOrnu', 'ASC']], attributes: {exclude: [ 'refNum','createdAt', 'updatedAt', 'deletedAt']}, as : 'enrollIngrs'}], 
-            attributes: {exclude: [ 'createdAt', 'updatedAt', 'deletedAt']}
+            include: [{model : RefEnrollIngr, attributes: {exclude: [ 'refNum','createdAt', 'updatedAt', 'deletedAt']}, as : 'enrollIngrs'}], 
+            attributes: {exclude: [ 'createdAt', 'updatedAt', 'deletedAt']},
+            order : [['enrollIngrs', 'ingrOrnu', 'ASC']]
         }).then((result) => {
             res.status(200).json(result)
         }).catch((err) => {
