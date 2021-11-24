@@ -113,7 +113,7 @@ module.exports = class RecipeController {
         
         if(!keyword){
             query = `
-                SELECT distinct recipe_num, title, pic_path
+                SELECT distinct recipe_num as recipeNum, title as title, pic_path as picPath
                 FROM recipe
                 order by recipe_num 
                 limit ${offset}, 20`
@@ -122,7 +122,7 @@ module.exports = class RecipeController {
             // 정확도순으로 정렬하기 위해서
             // Heroku에서 rank 함수를 지원하지 않아 case문으로
             query = `
-                SELECT distinct recipe.recipe_num, recipe.title, recipe.pic_path
+                SELECT distinct recipe.recipe_num as recipeNum, recipe.title as title, recipe.pic_path as picPath
                 FROM recipe, recipe_ingr
                 where (recipe.title like '%${keyword}%') 
                     OR (recipe.recipe_num=recipe_ingr.recipe_num AND recipe_ingr.ingr_name like '%${keyword}%')
