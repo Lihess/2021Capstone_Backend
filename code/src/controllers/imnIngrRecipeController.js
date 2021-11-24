@@ -101,17 +101,17 @@ module.exports = class ImnIngrRecipeController {
     // 사용자의 모든 임박 식자재와 그에 대한 레시피 read
     static async readIIRsByUser(req, res){
         const { userNum } = req.params
-        
+    
         IIR.findAll({
             where : {
-                refNum : [sequelize.literal(`SELECT ref_num FROM ref WHERE owner_num=${userNum}`)]
+                refNum : [sequelize.literal(`SELECT distinct ref_num FROM ref WHERE owner_num=${userNum}`)]
             },
             order : [['refNum', 'ASC'], ['ingrOrnu', 'ASC']],
             include: [
                 { model : Recipe, attributes: {exclude: [ 'createdAt', 'updatedAt', 'deletedAt']}, as : 'recipe'},
-                { model : RefEnrollIngr, attributes: {exclude: [ 'refNum', 'ingrOrnu', 'createdAt', 'updatedAt', 'deletedAt']}, as : 'refEnrollIngr'}
+                { model : RefEnrollIngr, where: sequelize.literal('RefEnrollIngr.ref_num = ImnIngrRecipe.ref_num'), attributes: {exclude: [ 'refNum', 'ingrOrnu', 'createdAt', 'updatedAt', 'deletedAt']}, as : 'refEnrollIngr'}
             ],
-            attributes: {exclude: [ 'recipeNum','createdAt', 'updatedAt', 'deletedAt']}
+            attributes: {exclude: [ 'recipeNum','createdAt', 'updatedAt', 'deletedAt']},
         }).then((result) => {
             res.status(200).json(result)
         }).catch((err) => {
