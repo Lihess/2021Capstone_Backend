@@ -115,10 +115,9 @@ module.exports = class RefController {
 
         Ref.findAll({
             where : { ownerNum : ownerNum },
-            order : [['refNum', 'ASC']],
+            order : [['refNum', 'ASC'], ['enrollIngrs', 'expyDate', 'ASC']],
             include: [{model : RefEnrollIngr, attributes: {exclude: [ 'refNum','createdAt', 'updatedAt', 'deletedAt']}, as : 'enrollIngrs'}], 
-            attributes: {exclude: [ 'createdAt', 'updatedAt', 'deletedAt']},
-            order : [['enrollIngrs', 'ingrOrnu', 'ASC']]
+            attributes: {exclude: [ 'createdAt', 'updatedAt', 'deletedAt']}
         }).then((result) => {
             res.status(200).json(result)
         }).catch((err) => {
